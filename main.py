@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from parser import parser, symbol_table, error_table
-
+from lexer import lexer as lex_inst
 def analizar():
     # Limpiar tablas
     for w in sym_table.get_children(): sym_table.delete(w)
@@ -10,7 +10,11 @@ def analizar():
     error_table.clear()
 
     codigo = editor.get("1.0", tk.END)
-    parser.parse(codigo)
+
+ 
+    lex_inst.lineno = 1
+    parser.parse(codigo, lexer=lex_inst)
+
 
     # Poblar tabla de símbolos (sin duplicados)
     for lexema, tipo in symbol_table.rows():
@@ -26,7 +30,8 @@ def limpiar():
     for w in err_table.get_children(): err_table.delete(w)
     symbol_table.clear()
     error_table.clear()
-
+    lex_inst.lineno = 1  
+    
 root = tk.Tk()
 root.title("Compilador U1 - Automatas II (FOR)")
 root.geometry("1050x640")
