@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'programaAND ASIGNACION CADENA COMA DIF DIV ENTERO FOR ID IGUAL LBRACE LPAREN MAS MAYOR MAYORIGUAL MENOR MENORIGUAL MENOS MOD MULT OR PUNTOYCOMA RBRACE REAL RPAREN TIPOprograma : programa sentencia\n| sentenciasentencia : declaracion\n| asignacion\n| ciclo_fordeclaracion : TIPO ID PUNTOYCOMAasignacion : ID ASIGNACION expresion PUNTOYCOMAasignacion_simple : ID ASIGNACION expresionciclo_for : FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACEcondicion : expresion_relexpresion_rel : expresion MAYOR expresion\n| expresion MENOR expresion\n| expresion MAYORIGUAL expresion\n| expresion MENORIGUAL expresion\n| expresion IGUAL expresion\n| expresion DIF expresionexpresion : expresion MAS expresion\n| expresion MENOS expresion\n| expresion MULT expresion\n| expresion DIV expresion\n| expresion MOD expresionexpresion : LPAREN expresion RPARENexpresion : IDexpresion : ENTERO\n| REALexpresion : CADENAcuerpo : cuerpo sentencia\n| sentencia\n| emptyempty :'
+_lr_signature = 'leftORleftANDnonassocMAYORMENORMAYORIGUALMENORIGUALIGUALDIFleftMASMENOSleftMULTDIVMODrightUMINUSUPLUSAND ASIGNACION CADENA COMA DIF DIV ENTERO FOR ID IGUAL LBRACE LPAREN MAS MAYOR MAYORIGUAL MENOR MENORIGUAL MENOS MOD MULT OR PUNTOYCOMA RBRACE REAL RPAREN TIPOprograma : lista_sentencias_optlista_sentencias_opt : lista_sentencias\n| emptylista_sentencias : lista_sentencias sentencia\n| sentenciasentencia : declaracion\n| asignacion\n| ciclo_for\n| expresion PUNTOYCOMAdeclaracion : TIPO ID PUNTOYCOMAasignacion : ID ASIGNACION expresion PUNTOYCOMAasignacion_simple : ID ASIGNACION expresionciclo_for : FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACEcuerpo : lista_sentencias_optcondicion : expresion_rel\n| expresion_rel OR expresion_rel\n| expresion_rel AND expresion_relexpresion : LPAREN expresion RPARENexpresion : IDexpresion : ENTEROexpresion : REALexpresion : CADENAexpresion : MENOS expresion %prec UMINUS\n| MAS expresion %prec UPLUSexpresion : expresion MAS expresion\n| expresion MENOS expresion\n| expresion MULT expresion\n| expresion DIV expresion\n| expresion MOD expresionexpresion_rel : expresion MAYOR expresion\n| expresion MENOR expresion\n| expresion MAYORIGUAL expresion\n| expresion MENORIGUAL expresion\n| expresion IGUAL expresion\n| expresion DIF expresionempty :'
     
-_lr_action_items = {'TIPO':([0,1,2,3,4,5,9,13,21,54,56,57,58,59,60,],[6,6,-2,-3,-4,-5,-1,-6,-7,6,6,-28,-29,-9,-27,]),'ID':([0,1,2,3,4,5,6,9,11,12,13,16,20,21,22,23,24,25,26,37,38,39,40,41,42,43,53,54,56,57,58,59,60,],[7,7,-2,-3,-4,-5,10,-1,14,7,-6,14,14,-7,14,14,14,14,14,45,14,14,14,14,14,14,14,7,7,-28,-29,-9,-27,]),'FOR':([0,1,2,3,4,5,9,13,21,54,56,57,58,59,60,],[8,8,-2,-3,-4,-5,-1,-6,-7,8,8,-28,-29,-9,-27,]),'$end':([1,2,3,4,5,9,13,21,59,],[0,-2,-3,-4,-5,-1,-6,-7,-9,]),'RBRACE':([3,4,5,13,21,54,56,57,58,59,60,],[-3,-4,-5,-6,-7,-30,59,-28,-29,-9,-27,]),'ASIGNACION':([7,45,],[11,53,]),'LPAREN':([8,11,16,20,21,22,23,24,25,26,38,39,40,41,42,43,53,],[12,16,16,16,-7,16,16,16,16,16,16,16,16,16,16,16,16,]),'PUNTOYCOMA':([10,14,15,17,18,19,28,29,31,32,33,34,35,36,46,47,48,49,50,51,],[13,-23,21,-24,-25,-26,37,-10,-17,-18,-19,-20,-21,-22,-11,-12,-13,-14,-15,-16,]),'ENTERO':([11,16,20,21,22,23,24,25,26,38,39,40,41,42,43,53,],[17,17,17,-7,17,17,17,17,17,17,17,17,17,17,17,17,]),'REAL':([11,16,20,21,22,23,24,25,26,38,39,40,41,42,43,53,],[18,18,18,-7,18,18,18,18,18,18,18,18,18,18,18,18,]),'CADENA':([11,16,20,21,22,23,24,25,26,38,39,40,41,42,43,53,],[19,19,19,-7,19,19,19,19,19,19,19,19,19,19,19,19,]),'MAS':([14,15,17,18,19,27,30,31,32,33,34,35,36,46,47,48,49,50,51,55,],[-23,22,-24,-25,-26,22,22,22,22,22,22,22,-22,22,22,22,22,22,22,22,]),'MENOS':([14,15,17,18,19,27,30,31,32,33,34,35,36,46,47,48,49,50,51,55,],[-23,23,-24,-25,-26,23,23,23,23,23,23,23,-22,23,23,23,23,23,23,23,]),'MULT':([14,15,17,18,19,27,30,31,32,33,34,35,36,46,47,48,49,50,51,55,],[-23,24,-24,-25,-26,24,24,24,24,24,24,24,-22,24,24,24,24,24,24,24,]),'DIV':([14,15,17,18,19,27,30,31,32,33,34,35,36,46,47,48,49,50,51,55,],[-23,25,-24,-25,-26,25,25,25,25,25,25,25,-22,25,25,25,25,25,25,25,]),'MOD':([14,15,17,18,19,27,30,31,32,33,34,35,36,46,47,48,49,50,51,55,],[-23,26,-24,-25,-26,26,26,26,26,26,26,26,-22,26,26,26,26,26,26,26,]),'RPAREN':([14,17,18,19,27,31,32,33,34,35,36,44,55,],[-23,-24,-25,-26,36,-17,-18,-19,-20,-21,-22,52,-8,]),'MAYOR':([14,17,18,19,30,31,32,33,34,35,36,],[-23,-24,-25,-26,38,-17,-18,-19,-20,-21,-22,]),'MENOR':([14,17,18,19,30,31,32,33,34,35,36,],[-23,-24,-25,-26,39,-17,-18,-19,-20,-21,-22,]),'MAYORIGUAL':([14,17,18,19,30,31,32,33,34,35,36,],[-23,-24,-25,-26,40,-17,-18,-19,-20,-21,-22,]),'MENORIGUAL':([14,17,18,19,30,31,32,33,34,35,36,],[-23,-24,-25,-26,41,-17,-18,-19,-20,-21,-22,]),'IGUAL':([14,17,18,19,30,31,32,33,34,35,36,],[-23,-24,-25,-26,42,-17,-18,-19,-20,-21,-22,]),'DIF':([14,17,18,19,30,31,32,33,34,35,36,],[-23,-24,-25,-26,43,-17,-18,-19,-20,-21,-22,]),'LBRACE':([52,],[54,]),}
+_lr_action_items = {'$end':([0,1,2,3,4,5,6,7,8,19,20,38,43,72,],[-36,0,-1,-2,-3,-5,-6,-7,-8,-4,-9,-10,-11,-13,]),'TIPO':([0,3,5,6,7,8,19,20,38,43,68,72,],[10,10,-5,-6,-7,-8,-4,-9,-10,-11,10,-13,]),'ID':([0,3,5,6,7,8,10,13,17,18,19,20,21,22,23,24,25,27,28,38,40,43,47,48,49,50,51,52,53,54,55,67,68,72,],[11,11,-5,-6,-7,-8,26,30,30,30,-4,-9,30,30,30,30,30,30,41,-10,30,-11,57,30,30,30,30,30,30,30,30,30,11,-13,]),'FOR':([0,3,5,6,7,8,19,20,38,43,68,72,],[12,12,-5,-6,-7,-8,-4,-9,-10,-11,12,-13,]),'LPAREN':([0,3,5,6,7,8,12,13,17,18,19,20,21,22,23,24,25,27,38,40,43,48,49,50,51,52,53,54,55,67,68,72,],[13,13,-5,-6,-7,-8,28,13,13,13,-4,-9,13,13,13,13,13,13,-10,13,-11,13,13,13,13,13,13,13,13,13,13,-13,]),'ENTERO':([0,3,5,6,7,8,13,17,18,19,20,21,22,23,24,25,27,38,40,43,48,49,50,51,52,53,54,55,67,68,72,],[14,14,-5,-6,-7,-8,14,14,14,-4,-9,14,14,14,14,14,14,-10,14,-11,14,14,14,14,14,14,14,14,14,14,-13,]),'REAL':([0,3,5,6,7,8,13,17,18,19,20,21,22,23,24,25,27,38,40,43,48,49,50,51,52,53,54,55,67,68,72,],[15,15,-5,-6,-7,-8,15,15,15,-4,-9,15,15,15,15,15,15,-10,15,-11,15,15,15,15,15,15,15,15,15,15,-13,]),'CADENA':([0,3,5,6,7,8,13,17,18,19,20,21,22,23,24,25,27,38,40,43,48,49,50,51,52,53,54,55,67,68,72,],[16,16,-5,-6,-7,-8,16,16,16,-4,-9,16,16,16,16,16,16,-10,16,-11,16,16,16,16,16,16,16,16,16,16,-13,]),'MENOS':([0,3,5,6,7,8,9,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,29,30,31,32,33,34,35,36,37,38,39,40,42,43,46,48,49,50,51,52,53,54,55,60,61,62,63,64,65,67,68,69,72,],[17,17,-5,-6,-7,-8,22,-19,17,-20,-21,-22,17,17,-4,-9,17,17,17,17,17,17,22,-19,-23,-24,-25,-26,-27,-28,-29,-10,22,17,-18,-11,22,17,17,17,17,17,17,17,17,22,22,22,22,22,22,17,17,22,-13,]),'MAS':([0,3,5,6,7,8,9,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,29,30,31,32,33,34,35,36,37,38,39,40,42,43,46,48,49,50,51,52,53,54,55,60,61,62,63,64,65,67,68,69,72,],[18,18,-5,-6,-7,-8,21,-19,18,-20,-21,-22,18,18,-4,-9,18,18,18,18,18,18,21,-19,-23,-24,-25,-26,-27,-28,-29,-10,21,18,-18,-11,21,18,18,18,18,18,18,18,18,21,21,21,21,21,21,18,18,21,-13,]),'RBRACE':([3,4,5,6,7,8,19,20,38,43,68,70,71,72,],[-2,-3,-5,-6,-7,-8,-4,-9,-10,-11,-36,72,-14,-13,]),'PUNTOYCOMA':([9,11,14,15,16,26,30,31,32,33,34,35,36,37,39,42,44,45,58,59,60,61,62,63,64,65,],[20,-19,-20,-21,-22,38,-19,-23,-24,-25,-26,-27,-28,-29,43,-18,47,-15,-16,-17,-30,-31,-32,-33,-34,-35,]),'MULT':([9,11,14,15,16,29,30,31,32,33,34,35,36,37,39,42,46,60,61,62,63,64,65,69,],[23,-19,-20,-21,-22,23,-19,-23,-24,23,23,-27,-28,-29,23,-18,23,23,23,23,23,23,23,23,]),'DIV':([9,11,14,15,16,29,30,31,32,33,34,35,36,37,39,42,46,60,61,62,63,64,65,69,],[24,-19,-20,-21,-22,24,-19,-23,-24,24,24,-27,-28,-29,24,-18,24,24,24,24,24,24,24,24,]),'MOD':([9,11,14,15,16,29,30,31,32,33,34,35,36,37,39,42,46,60,61,62,63,64,65,69,],[25,-19,-20,-21,-22,25,-19,-23,-24,25,25,-27,-28,-29,25,-18,25,25,25,25,25,25,25,25,]),'ASIGNACION':([11,41,57,],[27,27,67,]),'RPAREN':([14,15,16,29,30,31,32,33,34,35,36,37,42,56,69,],[-20,-21,-22,42,-19,-23,-24,-25,-26,-27,-28,-29,-18,66,-12,]),'MAYOR':([14,15,16,30,31,32,33,34,35,36,37,42,46,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,50,]),'MENOR':([14,15,16,30,31,32,33,34,35,36,37,42,46,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,51,]),'MAYORIGUAL':([14,15,16,30,31,32,33,34,35,36,37,42,46,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,52,]),'MENORIGUAL':([14,15,16,30,31,32,33,34,35,36,37,42,46,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,53,]),'IGUAL':([14,15,16,30,31,32,33,34,35,36,37,42,46,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,54,]),'DIF':([14,15,16,30,31,32,33,34,35,36,37,42,46,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,55,]),'OR':([14,15,16,30,31,32,33,34,35,36,37,42,45,60,61,62,63,64,65,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,48,-30,-31,-32,-33,-34,-35,]),'AND':([14,15,16,30,31,32,33,34,35,36,37,42,45,60,61,62,63,64,65,],[-20,-21,-22,-19,-23,-24,-25,-26,-27,-28,-29,-18,49,-30,-31,-32,-33,-34,-35,]),'LBRACE':([66,],[68,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'programa':([0,],[1,]),'sentencia':([0,1,54,56,],[2,9,57,60,]),'declaracion':([0,1,54,56,],[3,3,3,3,]),'asignacion':([0,1,12,54,56,],[4,4,20,4,4,]),'ciclo_for':([0,1,54,56,],[5,5,5,5,]),'expresion':([11,16,20,22,23,24,25,26,38,39,40,41,42,43,53,],[15,27,30,31,32,33,34,35,46,47,48,49,50,51,55,]),'condicion':([20,],[28,]),'expresion_rel':([20,],[29,]),'asignacion_simple':([37,],[44,]),'cuerpo':([54,],[56,]),'empty':([54,],[58,]),}
+_lr_goto_items = {'programa':([0,],[1,]),'lista_sentencias_opt':([0,68,],[2,71,]),'lista_sentencias':([0,68,],[3,3,]),'empty':([0,68,],[4,4,]),'sentencia':([0,3,68,],[5,19,5,]),'declaracion':([0,3,68,],[6,6,6,]),'asignacion':([0,3,28,68,],[7,7,40,7,]),'ciclo_for':([0,3,68,],[8,8,8,]),'expresion':([0,3,13,17,18,21,22,23,24,25,27,40,48,49,50,51,52,53,54,55,67,68,],[9,9,29,31,32,33,34,35,36,37,39,46,46,46,60,61,62,63,64,65,69,9,]),'condicion':([40,],[44,]),'expresion_rel':([40,48,49,],[45,58,59,]),'asignacion_simple':([47,],[56,]),'cuerpo':([68,],[70,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,34 +27,40 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> programa","S'",1,None,None,None),
-  ('programa -> programa sentencia','programa',2,'p_programa','parser.py',27),
-  ('programa -> sentencia','programa',1,'p_programa','parser.py',28),
-  ('sentencia -> declaracion','sentencia',1,'p_sentencia','parser.py',32),
-  ('sentencia -> asignacion','sentencia',1,'p_sentencia','parser.py',33),
-  ('sentencia -> ciclo_for','sentencia',1,'p_sentencia','parser.py',34),
-  ('declaracion -> TIPO ID PUNTOYCOMA','declaracion',3,'p_declaracion','parser.py',39),
-  ('asignacion -> ID ASIGNACION expresion PUNTOYCOMA','asignacion',4,'p_asignacion','parser.py',49),
-  ('asignacion_simple -> ID ASIGNACION expresion','asignacion_simple',3,'p_asignacion_simple','parser.py',61),
-  ('ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE','ciclo_for',10,'p_ciclo_for','parser.py',75),
-  ('condicion -> expresion_rel','condicion',1,'p_condicion','parser.py',79),
-  ('expresion_rel -> expresion MAYOR expresion','expresion_rel',3,'p_expresion_rel','parser.py',83),
-  ('expresion_rel -> expresion MENOR expresion','expresion_rel',3,'p_expresion_rel','parser.py',84),
-  ('expresion_rel -> expresion MAYORIGUAL expresion','expresion_rel',3,'p_expresion_rel','parser.py',85),
-  ('expresion_rel -> expresion MENORIGUAL expresion','expresion_rel',3,'p_expresion_rel','parser.py',86),
-  ('expresion_rel -> expresion IGUAL expresion','expresion_rel',3,'p_expresion_rel','parser.py',87),
-  ('expresion_rel -> expresion DIF expresion','expresion_rel',3,'p_expresion_rel','parser.py',88),
-  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_binaria','parser.py',92),
-  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_binaria','parser.py',93),
-  ('expresion -> expresion MULT expresion','expresion',3,'p_expresion_binaria','parser.py',94),
-  ('expresion -> expresion DIV expresion','expresion',3,'p_expresion_binaria','parser.py',95),
-  ('expresion -> expresion MOD expresion','expresion',3,'p_expresion_binaria','parser.py',96),
-  ('expresion -> LPAREN expresion RPAREN','expresion',3,'p_expresion_group','parser.py',106),
-  ('expresion -> ID','expresion',1,'p_expresion_id','parser.py',110),
-  ('expresion -> ENTERO','expresion',1,'p_expresion_num','parser.py',119),
-  ('expresion -> REAL','expresion',1,'p_expresion_num','parser.py',120),
-  ('expresion -> CADENA','expresion',1,'p_expresion_cadena','parser.py',124),
-  ('cuerpo -> cuerpo sentencia','cuerpo',2,'p_cuerpo','parser.py',128),
-  ('cuerpo -> sentencia','cuerpo',1,'p_cuerpo','parser.py',129),
-  ('cuerpo -> empty','cuerpo',1,'p_cuerpo','parser.py',130),
-  ('empty -> <empty>','empty',0,'p_empty','parser.py',134),
+  ('programa -> lista_sentencias_opt','programa',1,'p_programa','parser.py',67),
+  ('lista_sentencias_opt -> lista_sentencias','lista_sentencias_opt',1,'p_lista_sentencias_opt','parser.py',71),
+  ('lista_sentencias_opt -> empty','lista_sentencias_opt',1,'p_lista_sentencias_opt','parser.py',72),
+  ('lista_sentencias -> lista_sentencias sentencia','lista_sentencias',2,'p_lista_sentencias','parser.py',76),
+  ('lista_sentencias -> sentencia','lista_sentencias',1,'p_lista_sentencias','parser.py',77),
+  ('sentencia -> declaracion','sentencia',1,'p_sentencia','parser.py',81),
+  ('sentencia -> asignacion','sentencia',1,'p_sentencia','parser.py',82),
+  ('sentencia -> ciclo_for','sentencia',1,'p_sentencia','parser.py',83),
+  ('sentencia -> expresion PUNTOYCOMA','sentencia',2,'p_sentencia','parser.py',84),
+  ('declaracion -> TIPO ID PUNTOYCOMA','declaracion',3,'p_declaracion','parser.py',91),
+  ('asignacion -> ID ASIGNACION expresion PUNTOYCOMA','asignacion',4,'p_asignacion','parser.py',103),
+  ('asignacion_simple -> ID ASIGNACION expresion','asignacion_simple',3,'p_asignacion_simple','parser.py',116),
+  ('ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE','ciclo_for',10,'p_ciclo_for','parser.py',132),
+  ('cuerpo -> lista_sentencias_opt','cuerpo',1,'p_cuerpo','parser.py',136),
+  ('condicion -> expresion_rel','condicion',1,'p_condicion','parser.py',141),
+  ('condicion -> expresion_rel OR expresion_rel','condicion',3,'p_condicion','parser.py',142),
+  ('condicion -> expresion_rel AND expresion_rel','condicion',3,'p_condicion','parser.py',143),
+  ('expresion -> LPAREN expresion RPAREN','expresion',3,'p_expresion_paren','parser.py',150),
+  ('expresion -> ID','expresion',1,'p_expresion_id','parser.py',154),
+  ('expresion -> ENTERO','expresion',1,'p_expresion_entero','parser.py',163),
+  ('expresion -> REAL','expresion',1,'p_expresion_real','parser.py',167),
+  ('expresion -> CADENA','expresion',1,'p_expresion_cadena','parser.py',171),
+  ('expresion -> MENOS expresion','expresion',2,'p_expresion_unaria','parser.py',175),
+  ('expresion -> MAS expresion','expresion',2,'p_expresion_unaria','parser.py',176),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_binaria_arit','parser.py',182),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_binaria_arit','parser.py',183),
+  ('expresion -> expresion MULT expresion','expresion',3,'p_expresion_binaria_arit','parser.py',184),
+  ('expresion -> expresion DIV expresion','expresion',3,'p_expresion_binaria_arit','parser.py',185),
+  ('expresion -> expresion MOD expresion','expresion',3,'p_expresion_binaria_arit','parser.py',186),
+  ('expresion_rel -> expresion MAYOR expresion','expresion_rel',3,'p_expresion_rel','parser.py',191),
+  ('expresion_rel -> expresion MENOR expresion','expresion_rel',3,'p_expresion_rel','parser.py',192),
+  ('expresion_rel -> expresion MAYORIGUAL expresion','expresion_rel',3,'p_expresion_rel','parser.py',193),
+  ('expresion_rel -> expresion MENORIGUAL expresion','expresion_rel',3,'p_expresion_rel','parser.py',194),
+  ('expresion_rel -> expresion IGUAL expresion','expresion_rel',3,'p_expresion_rel','parser.py',195),
+  ('expresion_rel -> expresion DIF expresion','expresion_rel',3,'p_expresion_rel','parser.py',196),
+  ('empty -> <empty>','empty',0,'p_empty','parser.py',203),
 ]

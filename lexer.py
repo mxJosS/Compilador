@@ -27,6 +27,7 @@ def t_TIPO(t):
     r'(cats|cat|meow)\b'
     return t
 
+
 def t_FOR(t):
     r'for\b'
     return t
@@ -59,12 +60,12 @@ t_PUNTOYCOMA = r';'
 
 # Literales
 def t_REAL(t):
-    r'\d+\.\d+'
+    r'\d+\.\d+(?![A-Z$])'   # evita REAL si seguido de letra MAYÚSCULA o $
     t.value = float(t.value)
     return t
 
 def t_ENTERO(t):
-    r'\d+'
+    r'\d+(?![A-Z$])'        # evita ENTERO si seguido de letra MAYÚSCULA o $
     t.value = int(t.value)
     return t
 
@@ -74,7 +75,7 @@ def t_CADENA(t):
 
 # Tu ER de identificadores: SOLO MAYÚSCULAS y DÍGITOS
 def t_ID(t):
-    r'[0-9A-Z]+'
+    r'\$?[0-9A-Z]+'         # permite opcional $ al inicio ($1ITA, 1ABC, ABC123)
     return t
 
 def t_error(t):

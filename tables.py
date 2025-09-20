@@ -1,6 +1,8 @@
+from collections import OrderedDict
+
 class SymbolTable:
     def __init__(self):
-        self.symbols = {}  # lexema -> tipo
+        self.symbols = OrderedDict()  # preserva orden
 
     def clear(self):
         self.symbols.clear()
@@ -15,13 +17,13 @@ class SymbolTable:
         return self.symbols.get(lexema)
 
     def rows(self):
-        return [(k, v) for k, v in self.symbols.items()]
+        return list(self.symbols.items())
 
 
 class ErrorTable:
     def __init__(self):
-        self.errors = []       # [{Token, Lexema, Renglón, Descripción}]
-        self.counter = 0       # Para ES1, ES2, ...
+        self.errors = []
+        self.counter = 0
 
     def clear(self):
         self.errors.clear()
@@ -32,21 +34,14 @@ class ErrorTable:
         return f"ES{self.counter}"
 
     def add(self, token, lexema, renglon, descripcion):
-        """
-        - token: puedes pasar None o '' y se autoasigna ES#
-        - No se repite la combinación (Lexema, Renglón).
-        """
-        # Evitar repetición de (Lexema, Renglón)
+        # Evita duplicar por (Lexema, Renglón, Descripción)
         for e in self.errors:
-            if e['Lexema'] == lexema and e['Renglón'] == renglon:
+            if e['Lexema'] == lexema and e['Renglón'] == renglon and e['Descripción'] == descripcion:
                 return
-
-        code = token if token else self._next_code()
-        # Asegurar unicidad de Token también
+        code = token or self._next_code()
         used = {e['Token'] for e in self.errors}
         while code in used:
             code = self._next_code()
-
         self.errors.append({
             "Token": code,
             "Lexema": lexema,
@@ -56,3 +51,26 @@ class ErrorTable:
 
     def rows(self):
         return [(e['Token'], e['Lexema'], e['Renglón'], e['Descripción']) for e in self.errors]
+
+
+class LexemeTable:
+    """
+    Tabla de TODOS los lexemas que aparecen (operadores, ;, IDs, etc.)
+    Para los IDs, luego del parse completamos el 'Tipo'.
+    """
+    def __init__(self):
+        self.items = OrderedDict()  # lexema -> tipo_o_None (preserva orden)
+
+    def clear(self):
+        self.items.clear()
+
+    def add(self, lexema, tipo=None):
+        if lexema not in self.items:     # queremos 1a aparición
+            self.items[lexema] = tipo
+
+    def set_type_if_id(self, lexema, tipo):
+        if lexema in self.items:
+            self.items[lexema] = tipo
+
+    def rows(self):
+        return [(k, (v if v else "")) for k, v in self.items.items()]

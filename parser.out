@@ -2,1203 +2,1592 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    AND
     COMA
-    OR
 
 Grammar
 
 Rule 0     S' -> programa
-Rule 1     programa -> programa sentencia
-Rule 2     programa -> sentencia
-Rule 3     sentencia -> declaracion
-Rule 4     sentencia -> asignacion
-Rule 5     sentencia -> ciclo_for
-Rule 6     declaracion -> TIPO ID PUNTOYCOMA
-Rule 7     asignacion -> ID ASIGNACION expresion PUNTOYCOMA
-Rule 8     asignacion_simple -> ID ASIGNACION expresion
-Rule 9     ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
-Rule 10    condicion -> expresion_rel
-Rule 11    expresion_rel -> expresion MAYOR expresion
-Rule 12    expresion_rel -> expresion MENOR expresion
-Rule 13    expresion_rel -> expresion MAYORIGUAL expresion
-Rule 14    expresion_rel -> expresion MENORIGUAL expresion
-Rule 15    expresion_rel -> expresion IGUAL expresion
-Rule 16    expresion_rel -> expresion DIF expresion
-Rule 17    expresion -> expresion MAS expresion
-Rule 18    expresion -> expresion MENOS expresion
-Rule 19    expresion -> expresion MULT expresion
-Rule 20    expresion -> expresion DIV expresion
-Rule 21    expresion -> expresion MOD expresion
-Rule 22    expresion -> LPAREN expresion RPAREN
-Rule 23    expresion -> ID
-Rule 24    expresion -> ENTERO
-Rule 25    expresion -> REAL
-Rule 26    expresion -> CADENA
-Rule 27    cuerpo -> cuerpo sentencia
-Rule 28    cuerpo -> sentencia
-Rule 29    cuerpo -> empty
-Rule 30    empty -> <empty>
+Rule 1     programa -> lista_sentencias_opt
+Rule 2     lista_sentencias_opt -> lista_sentencias
+Rule 3     lista_sentencias_opt -> empty
+Rule 4     lista_sentencias -> lista_sentencias sentencia
+Rule 5     lista_sentencias -> sentencia
+Rule 6     sentencia -> declaracion
+Rule 7     sentencia -> asignacion
+Rule 8     sentencia -> ciclo_for
+Rule 9     sentencia -> expresion PUNTOYCOMA
+Rule 10    declaracion -> TIPO ID PUNTOYCOMA
+Rule 11    asignacion -> ID ASIGNACION expresion PUNTOYCOMA
+Rule 12    asignacion_simple -> ID ASIGNACION expresion
+Rule 13    ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+Rule 14    cuerpo -> lista_sentencias_opt
+Rule 15    condicion -> expresion_rel
+Rule 16    condicion -> expresion_rel OR expresion_rel
+Rule 17    condicion -> expresion_rel AND expresion_rel
+Rule 18    expresion -> LPAREN expresion RPAREN
+Rule 19    expresion -> ID
+Rule 20    expresion -> ENTERO
+Rule 21    expresion -> REAL
+Rule 22    expresion -> CADENA
+Rule 23    expresion -> MENOS expresion
+Rule 24    expresion -> MAS expresion
+Rule 25    expresion -> expresion MAS expresion
+Rule 26    expresion -> expresion MENOS expresion
+Rule 27    expresion -> expresion MULT expresion
+Rule 28    expresion -> expresion DIV expresion
+Rule 29    expresion -> expresion MOD expresion
+Rule 30    expresion_rel -> expresion MAYOR expresion
+Rule 31    expresion_rel -> expresion MENOR expresion
+Rule 32    expresion_rel -> expresion MAYORIGUAL expresion
+Rule 33    expresion_rel -> expresion MENORIGUAL expresion
+Rule 34    expresion_rel -> expresion IGUAL expresion
+Rule 35    expresion_rel -> expresion DIF expresion
+Rule 36    empty -> <empty>
 
 Terminals, with rules where they appear
 
-AND                  : 
-ASIGNACION           : 7 8
-CADENA               : 26
+AND                  : 17
+ASIGNACION           : 11 12
+CADENA               : 22
 COMA                 : 
-DIF                  : 16
-DIV                  : 20
-ENTERO               : 24
-FOR                  : 9
-ID                   : 6 7 8 23
-IGUAL                : 15
-LBRACE               : 9
-LPAREN               : 9 22
-MAS                  : 17
-MAYOR                : 11
-MAYORIGUAL           : 13
-MENOR                : 12
-MENORIGUAL           : 14
-MENOS                : 18
-MOD                  : 21
-MULT                 : 19
-OR                   : 
-PUNTOYCOMA           : 6 7 9
-RBRACE               : 9
-REAL                 : 25
-RPAREN               : 9 22
-TIPO                 : 6
+DIF                  : 35
+DIV                  : 28
+ENTERO               : 20
+FOR                  : 13
+ID                   : 10 11 12 19
+IGUAL                : 34
+LBRACE               : 13
+LPAREN               : 13 18
+MAS                  : 24 25
+MAYOR                : 30
+MAYORIGUAL           : 32
+MENOR                : 31
+MENORIGUAL           : 33
+MENOS                : 23 26
+MOD                  : 29
+MULT                 : 27
+OR                   : 16
+PUNTOYCOMA           : 9 10 11 13
+RBRACE               : 13
+REAL                 : 21
+RPAREN               : 13 18
+TIPO                 : 10
 error                : 
 
 Nonterminals, with rules where they appear
 
-asignacion           : 4 9
-asignacion_simple    : 9
-ciclo_for            : 5
-condicion            : 9
-cuerpo               : 9 27
-declaracion          : 3
-empty                : 29
-expresion            : 7 8 11 11 12 12 13 13 14 14 15 15 16 16 17 17 18 18 19 19 20 20 21 21 22
-expresion_rel        : 10
-programa             : 1 0
-sentencia            : 1 2 27 28
+asignacion           : 7 13
+asignacion_simple    : 13
+ciclo_for            : 8
+condicion            : 13
+cuerpo               : 13
+declaracion          : 6
+empty                : 3
+expresion            : 9 11 12 18 23 24 25 25 26 26 27 27 28 28 29 29 30 30 31 31 32 32 33 33 34 34 35 35
+expresion_rel        : 15 16 16 17 17
+lista_sentencias     : 2 4
+lista_sentencias_opt : 1 14
+programa             : 0
+sentencia            : 4 5
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . programa
-    (1) programa -> . programa sentencia
-    (2) programa -> . sentencia
-    (3) sentencia -> . declaracion
-    (4) sentencia -> . asignacion
-    (5) sentencia -> . ciclo_for
-    (6) declaracion -> . TIPO ID PUNTOYCOMA
-    (7) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
-    (9) ciclo_for -> . FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (1) programa -> . lista_sentencias_opt
+    (2) lista_sentencias_opt -> . lista_sentencias
+    (3) lista_sentencias_opt -> . empty
+    (4) lista_sentencias -> . lista_sentencias sentencia
+    (5) lista_sentencias -> . sentencia
+    (36) empty -> .
+    (6) sentencia -> . declaracion
+    (7) sentencia -> . asignacion
+    (8) sentencia -> . ciclo_for
+    (9) sentencia -> . expresion PUNTOYCOMA
+    (10) declaracion -> . TIPO ID PUNTOYCOMA
+    (11) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
+    (13) ciclo_for -> . FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    TIPO            shift and go to state 6
-    ID              shift and go to state 7
-    FOR             shift and go to state 8
+    $end            reduce using rule 36 (empty -> .)
+    TIPO            shift and go to state 10
+    ID              shift and go to state 11
+    FOR             shift and go to state 12
+    LPAREN          shift and go to state 13
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
     programa                       shift and go to state 1
-    sentencia                      shift and go to state 2
-    declaracion                    shift and go to state 3
-    asignacion                     shift and go to state 4
-    ciclo_for                      shift and go to state 5
+    lista_sentencias_opt           shift and go to state 2
+    lista_sentencias               shift and go to state 3
+    empty                          shift and go to state 4
+    sentencia                      shift and go to state 5
+    declaracion                    shift and go to state 6
+    asignacion                     shift and go to state 7
+    ciclo_for                      shift and go to state 8
+    expresion                      shift and go to state 9
 
 state 1
 
     (0) S' -> programa .
-    (1) programa -> programa . sentencia
-    (3) sentencia -> . declaracion
-    (4) sentencia -> . asignacion
-    (5) sentencia -> . ciclo_for
-    (6) declaracion -> . TIPO ID PUNTOYCOMA
-    (7) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
-    (9) ciclo_for -> . FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
 
-    TIPO            shift and go to state 6
-    ID              shift and go to state 7
-    FOR             shift and go to state 8
 
-    sentencia                      shift and go to state 9
-    declaracion                    shift and go to state 3
-    asignacion                     shift and go to state 4
-    ciclo_for                      shift and go to state 5
 
 state 2
 
-    (2) programa -> sentencia .
+    (1) programa -> lista_sentencias_opt .
 
-    TIPO            reduce using rule 2 (programa -> sentencia .)
-    ID              reduce using rule 2 (programa -> sentencia .)
-    FOR             reduce using rule 2 (programa -> sentencia .)
-    $end            reduce using rule 2 (programa -> sentencia .)
+    $end            reduce using rule 1 (programa -> lista_sentencias_opt .)
 
 
 state 3
 
-    (3) sentencia -> declaracion .
+    (2) lista_sentencias_opt -> lista_sentencias .
+    (4) lista_sentencias -> lista_sentencias . sentencia
+    (6) sentencia -> . declaracion
+    (7) sentencia -> . asignacion
+    (8) sentencia -> . ciclo_for
+    (9) sentencia -> . expresion PUNTOYCOMA
+    (10) declaracion -> . TIPO ID PUNTOYCOMA
+    (11) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
+    (13) ciclo_for -> . FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    TIPO            reduce using rule 3 (sentencia -> declaracion .)
-    ID              reduce using rule 3 (sentencia -> declaracion .)
-    FOR             reduce using rule 3 (sentencia -> declaracion .)
-    $end            reduce using rule 3 (sentencia -> declaracion .)
-    RBRACE          reduce using rule 3 (sentencia -> declaracion .)
+    $end            reduce using rule 2 (lista_sentencias_opt -> lista_sentencias .)
+    RBRACE          reduce using rule 2 (lista_sentencias_opt -> lista_sentencias .)
+    TIPO            shift and go to state 10
+    ID              shift and go to state 11
+    FOR             shift and go to state 12
+    LPAREN          shift and go to state 13
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    sentencia                      shift and go to state 19
+    declaracion                    shift and go to state 6
+    asignacion                     shift and go to state 7
+    ciclo_for                      shift and go to state 8
+    expresion                      shift and go to state 9
 
 state 4
 
-    (4) sentencia -> asignacion .
+    (3) lista_sentencias_opt -> empty .
 
-    TIPO            reduce using rule 4 (sentencia -> asignacion .)
-    ID              reduce using rule 4 (sentencia -> asignacion .)
-    FOR             reduce using rule 4 (sentencia -> asignacion .)
-    $end            reduce using rule 4 (sentencia -> asignacion .)
-    RBRACE          reduce using rule 4 (sentencia -> asignacion .)
+    $end            reduce using rule 3 (lista_sentencias_opt -> empty .)
+    RBRACE          reduce using rule 3 (lista_sentencias_opt -> empty .)
 
 
 state 5
 
-    (5) sentencia -> ciclo_for .
+    (5) lista_sentencias -> sentencia .
 
-    TIPO            reduce using rule 5 (sentencia -> ciclo_for .)
-    ID              reduce using rule 5 (sentencia -> ciclo_for .)
-    FOR             reduce using rule 5 (sentencia -> ciclo_for .)
-    $end            reduce using rule 5 (sentencia -> ciclo_for .)
-    RBRACE          reduce using rule 5 (sentencia -> ciclo_for .)
+    TIPO            reduce using rule 5 (lista_sentencias -> sentencia .)
+    ID              reduce using rule 5 (lista_sentencias -> sentencia .)
+    FOR             reduce using rule 5 (lista_sentencias -> sentencia .)
+    LPAREN          reduce using rule 5 (lista_sentencias -> sentencia .)
+    ENTERO          reduce using rule 5 (lista_sentencias -> sentencia .)
+    REAL            reduce using rule 5 (lista_sentencias -> sentencia .)
+    CADENA          reduce using rule 5 (lista_sentencias -> sentencia .)
+    MENOS           reduce using rule 5 (lista_sentencias -> sentencia .)
+    MAS             reduce using rule 5 (lista_sentencias -> sentencia .)
+    $end            reduce using rule 5 (lista_sentencias -> sentencia .)
+    RBRACE          reduce using rule 5 (lista_sentencias -> sentencia .)
 
 
 state 6
 
-    (6) declaracion -> TIPO . ID PUNTOYCOMA
+    (6) sentencia -> declaracion .
 
-    ID              shift and go to state 10
+    TIPO            reduce using rule 6 (sentencia -> declaracion .)
+    ID              reduce using rule 6 (sentencia -> declaracion .)
+    FOR             reduce using rule 6 (sentencia -> declaracion .)
+    LPAREN          reduce using rule 6 (sentencia -> declaracion .)
+    ENTERO          reduce using rule 6 (sentencia -> declaracion .)
+    REAL            reduce using rule 6 (sentencia -> declaracion .)
+    CADENA          reduce using rule 6 (sentencia -> declaracion .)
+    MENOS           reduce using rule 6 (sentencia -> declaracion .)
+    MAS             reduce using rule 6 (sentencia -> declaracion .)
+    $end            reduce using rule 6 (sentencia -> declaracion .)
+    RBRACE          reduce using rule 6 (sentencia -> declaracion .)
 
 
 state 7
 
-    (7) asignacion -> ID . ASIGNACION expresion PUNTOYCOMA
+    (7) sentencia -> asignacion .
 
-    ASIGNACION      shift and go to state 11
+    TIPO            reduce using rule 7 (sentencia -> asignacion .)
+    ID              reduce using rule 7 (sentencia -> asignacion .)
+    FOR             reduce using rule 7 (sentencia -> asignacion .)
+    LPAREN          reduce using rule 7 (sentencia -> asignacion .)
+    ENTERO          reduce using rule 7 (sentencia -> asignacion .)
+    REAL            reduce using rule 7 (sentencia -> asignacion .)
+    CADENA          reduce using rule 7 (sentencia -> asignacion .)
+    MENOS           reduce using rule 7 (sentencia -> asignacion .)
+    MAS             reduce using rule 7 (sentencia -> asignacion .)
+    $end            reduce using rule 7 (sentencia -> asignacion .)
+    RBRACE          reduce using rule 7 (sentencia -> asignacion .)
 
 
 state 8
 
-    (9) ciclo_for -> FOR . LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (8) sentencia -> ciclo_for .
 
-    LPAREN          shift and go to state 12
+    TIPO            reduce using rule 8 (sentencia -> ciclo_for .)
+    ID              reduce using rule 8 (sentencia -> ciclo_for .)
+    FOR             reduce using rule 8 (sentencia -> ciclo_for .)
+    LPAREN          reduce using rule 8 (sentencia -> ciclo_for .)
+    ENTERO          reduce using rule 8 (sentencia -> ciclo_for .)
+    REAL            reduce using rule 8 (sentencia -> ciclo_for .)
+    CADENA          reduce using rule 8 (sentencia -> ciclo_for .)
+    MENOS           reduce using rule 8 (sentencia -> ciclo_for .)
+    MAS             reduce using rule 8 (sentencia -> ciclo_for .)
+    $end            reduce using rule 8 (sentencia -> ciclo_for .)
+    RBRACE          reduce using rule 8 (sentencia -> ciclo_for .)
 
 
 state 9
 
-    (1) programa -> programa sentencia .
+    (9) sentencia -> expresion . PUNTOYCOMA
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-    TIPO            reduce using rule 1 (programa -> programa sentencia .)
-    ID              reduce using rule 1 (programa -> programa sentencia .)
-    FOR             reduce using rule 1 (programa -> programa sentencia .)
-    $end            reduce using rule 1 (programa -> programa sentencia .)
+    PUNTOYCOMA      shift and go to state 20
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
 
 
 state 10
 
-    (6) declaracion -> TIPO ID . PUNTOYCOMA
+    (10) declaracion -> TIPO . ID PUNTOYCOMA
 
-    PUNTOYCOMA      shift and go to state 13
+    ID              shift and go to state 26
 
 
 state 11
 
-    (7) asignacion -> ID ASIGNACION . expresion PUNTOYCOMA
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (11) asignacion -> ID . ASIGNACION expresion PUNTOYCOMA
+    (19) expresion -> ID .
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    ASIGNACION      shift and go to state 27
+    PUNTOYCOMA      reduce using rule 19 (expresion -> ID .)
+    MAS             reduce using rule 19 (expresion -> ID .)
+    MENOS           reduce using rule 19 (expresion -> ID .)
+    MULT            reduce using rule 19 (expresion -> ID .)
+    DIV             reduce using rule 19 (expresion -> ID .)
+    MOD             reduce using rule 19 (expresion -> ID .)
 
-    expresion                      shift and go to state 15
 
 state 12
 
-    (9) ciclo_for -> FOR LPAREN . asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
-    (7) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
+    (13) ciclo_for -> FOR . LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
 
-    ID              shift and go to state 7
+    LPAREN          shift and go to state 28
 
-    asignacion                     shift and go to state 20
 
 state 13
 
-    (6) declaracion -> TIPO ID PUNTOYCOMA .
+    (18) expresion -> LPAREN . expresion RPAREN
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    TIPO            reduce using rule 6 (declaracion -> TIPO ID PUNTOYCOMA .)
-    ID              reduce using rule 6 (declaracion -> TIPO ID PUNTOYCOMA .)
-    FOR             reduce using rule 6 (declaracion -> TIPO ID PUNTOYCOMA .)
-    $end            reduce using rule 6 (declaracion -> TIPO ID PUNTOYCOMA .)
-    RBRACE          reduce using rule 6 (declaracion -> TIPO ID PUNTOYCOMA .)
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 29
 
 state 14
 
-    (23) expresion -> ID .
+    (20) expresion -> ENTERO .
 
-    PUNTOYCOMA      reduce using rule 23 (expresion -> ID .)
-    MAS             reduce using rule 23 (expresion -> ID .)
-    MENOS           reduce using rule 23 (expresion -> ID .)
-    MULT            reduce using rule 23 (expresion -> ID .)
-    DIV             reduce using rule 23 (expresion -> ID .)
-    MOD             reduce using rule 23 (expresion -> ID .)
-    RPAREN          reduce using rule 23 (expresion -> ID .)
-    MAYOR           reduce using rule 23 (expresion -> ID .)
-    MENOR           reduce using rule 23 (expresion -> ID .)
-    MAYORIGUAL      reduce using rule 23 (expresion -> ID .)
-    MENORIGUAL      reduce using rule 23 (expresion -> ID .)
-    IGUAL           reduce using rule 23 (expresion -> ID .)
-    DIF             reduce using rule 23 (expresion -> ID .)
+    PUNTOYCOMA      reduce using rule 20 (expresion -> ENTERO .)
+    MAS             reduce using rule 20 (expresion -> ENTERO .)
+    MENOS           reduce using rule 20 (expresion -> ENTERO .)
+    MULT            reduce using rule 20 (expresion -> ENTERO .)
+    DIV             reduce using rule 20 (expresion -> ENTERO .)
+    MOD             reduce using rule 20 (expresion -> ENTERO .)
+    RPAREN          reduce using rule 20 (expresion -> ENTERO .)
+    MAYOR           reduce using rule 20 (expresion -> ENTERO .)
+    MENOR           reduce using rule 20 (expresion -> ENTERO .)
+    MAYORIGUAL      reduce using rule 20 (expresion -> ENTERO .)
+    MENORIGUAL      reduce using rule 20 (expresion -> ENTERO .)
+    IGUAL           reduce using rule 20 (expresion -> ENTERO .)
+    DIF             reduce using rule 20 (expresion -> ENTERO .)
+    OR              reduce using rule 20 (expresion -> ENTERO .)
+    AND             reduce using rule 20 (expresion -> ENTERO .)
 
 
 state 15
 
-    (7) asignacion -> ID ASIGNACION expresion . PUNTOYCOMA
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (21) expresion -> REAL .
 
-    PUNTOYCOMA      shift and go to state 21
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    PUNTOYCOMA      reduce using rule 21 (expresion -> REAL .)
+    MAS             reduce using rule 21 (expresion -> REAL .)
+    MENOS           reduce using rule 21 (expresion -> REAL .)
+    MULT            reduce using rule 21 (expresion -> REAL .)
+    DIV             reduce using rule 21 (expresion -> REAL .)
+    MOD             reduce using rule 21 (expresion -> REAL .)
+    RPAREN          reduce using rule 21 (expresion -> REAL .)
+    MAYOR           reduce using rule 21 (expresion -> REAL .)
+    MENOR           reduce using rule 21 (expresion -> REAL .)
+    MAYORIGUAL      reduce using rule 21 (expresion -> REAL .)
+    MENORIGUAL      reduce using rule 21 (expresion -> REAL .)
+    IGUAL           reduce using rule 21 (expresion -> REAL .)
+    DIF             reduce using rule 21 (expresion -> REAL .)
+    OR              reduce using rule 21 (expresion -> REAL .)
+    AND             reduce using rule 21 (expresion -> REAL .)
 
 
 state 16
 
-    (22) expresion -> LPAREN . expresion RPAREN
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (22) expresion -> CADENA .
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    PUNTOYCOMA      reduce using rule 22 (expresion -> CADENA .)
+    MAS             reduce using rule 22 (expresion -> CADENA .)
+    MENOS           reduce using rule 22 (expresion -> CADENA .)
+    MULT            reduce using rule 22 (expresion -> CADENA .)
+    DIV             reduce using rule 22 (expresion -> CADENA .)
+    MOD             reduce using rule 22 (expresion -> CADENA .)
+    RPAREN          reduce using rule 22 (expresion -> CADENA .)
+    MAYOR           reduce using rule 22 (expresion -> CADENA .)
+    MENOR           reduce using rule 22 (expresion -> CADENA .)
+    MAYORIGUAL      reduce using rule 22 (expresion -> CADENA .)
+    MENORIGUAL      reduce using rule 22 (expresion -> CADENA .)
+    IGUAL           reduce using rule 22 (expresion -> CADENA .)
+    DIF             reduce using rule 22 (expresion -> CADENA .)
+    OR              reduce using rule 22 (expresion -> CADENA .)
+    AND             reduce using rule 22 (expresion -> CADENA .)
 
-    expresion                      shift and go to state 27
 
 state 17
 
-    (24) expresion -> ENTERO .
+    (23) expresion -> MENOS . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    PUNTOYCOMA      reduce using rule 24 (expresion -> ENTERO .)
-    MAS             reduce using rule 24 (expresion -> ENTERO .)
-    MENOS           reduce using rule 24 (expresion -> ENTERO .)
-    MULT            reduce using rule 24 (expresion -> ENTERO .)
-    DIV             reduce using rule 24 (expresion -> ENTERO .)
-    MOD             reduce using rule 24 (expresion -> ENTERO .)
-    RPAREN          reduce using rule 24 (expresion -> ENTERO .)
-    MAYOR           reduce using rule 24 (expresion -> ENTERO .)
-    MENOR           reduce using rule 24 (expresion -> ENTERO .)
-    MAYORIGUAL      reduce using rule 24 (expresion -> ENTERO .)
-    MENORIGUAL      reduce using rule 24 (expresion -> ENTERO .)
-    IGUAL           reduce using rule 24 (expresion -> ENTERO .)
-    DIF             reduce using rule 24 (expresion -> ENTERO .)
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 31
 
 state 18
 
-    (25) expresion -> REAL .
+    (24) expresion -> MAS . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    PUNTOYCOMA      reduce using rule 25 (expresion -> REAL .)
-    MAS             reduce using rule 25 (expresion -> REAL .)
-    MENOS           reduce using rule 25 (expresion -> REAL .)
-    MULT            reduce using rule 25 (expresion -> REAL .)
-    DIV             reduce using rule 25 (expresion -> REAL .)
-    MOD             reduce using rule 25 (expresion -> REAL .)
-    RPAREN          reduce using rule 25 (expresion -> REAL .)
-    MAYOR           reduce using rule 25 (expresion -> REAL .)
-    MENOR           reduce using rule 25 (expresion -> REAL .)
-    MAYORIGUAL      reduce using rule 25 (expresion -> REAL .)
-    MENORIGUAL      reduce using rule 25 (expresion -> REAL .)
-    IGUAL           reduce using rule 25 (expresion -> REAL .)
-    DIF             reduce using rule 25 (expresion -> REAL .)
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 32
 
 state 19
 
-    (26) expresion -> CADENA .
+    (4) lista_sentencias -> lista_sentencias sentencia .
 
-    PUNTOYCOMA      reduce using rule 26 (expresion -> CADENA .)
-    MAS             reduce using rule 26 (expresion -> CADENA .)
-    MENOS           reduce using rule 26 (expresion -> CADENA .)
-    MULT            reduce using rule 26 (expresion -> CADENA .)
-    DIV             reduce using rule 26 (expresion -> CADENA .)
-    MOD             reduce using rule 26 (expresion -> CADENA .)
-    RPAREN          reduce using rule 26 (expresion -> CADENA .)
-    MAYOR           reduce using rule 26 (expresion -> CADENA .)
-    MENOR           reduce using rule 26 (expresion -> CADENA .)
-    MAYORIGUAL      reduce using rule 26 (expresion -> CADENA .)
-    MENORIGUAL      reduce using rule 26 (expresion -> CADENA .)
-    IGUAL           reduce using rule 26 (expresion -> CADENA .)
-    DIF             reduce using rule 26 (expresion -> CADENA .)
+    TIPO            reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    ID              reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    FOR             reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    LPAREN          reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    ENTERO          reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    REAL            reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    CADENA          reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    MENOS           reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    MAS             reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    $end            reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
+    RBRACE          reduce using rule 4 (lista_sentencias -> lista_sentencias sentencia .)
 
 
 state 20
 
-    (9) ciclo_for -> FOR LPAREN asignacion . condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
-    (10) condicion -> . expresion_rel
-    (11) expresion_rel -> . expresion MAYOR expresion
-    (12) expresion_rel -> . expresion MENOR expresion
-    (13) expresion_rel -> . expresion MAYORIGUAL expresion
-    (14) expresion_rel -> . expresion MENORIGUAL expresion
-    (15) expresion_rel -> . expresion IGUAL expresion
-    (16) expresion_rel -> . expresion DIF expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (9) sentencia -> expresion PUNTOYCOMA .
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    TIPO            reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    ID              reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    FOR             reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    LPAREN          reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    ENTERO          reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    REAL            reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    CADENA          reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    MENOS           reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    MAS             reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    $end            reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
+    RBRACE          reduce using rule 9 (sentencia -> expresion PUNTOYCOMA .)
 
-    condicion                      shift and go to state 28
-    expresion_rel                  shift and go to state 29
-    expresion                      shift and go to state 30
 
 state 21
 
-    (7) asignacion -> ID ASIGNACION expresion PUNTOYCOMA .
+    (25) expresion -> expresion MAS . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    TIPO            reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    ID              reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    FOR             reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    $end            reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    LPAREN          reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    ENTERO          reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    REAL            reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    CADENA          reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-    RBRACE          reduce using rule 7 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
-
-
-state 22
-
-    (17) expresion -> expresion MAS . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
-
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
-
-    expresion                      shift and go to state 31
-
-state 23
-
-    (18) expresion -> expresion MENOS . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
-
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
-
-    expresion                      shift and go to state 32
-
-state 24
-
-    (19) expresion -> expresion MULT . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
-
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
     expresion                      shift and go to state 33
 
-state 25
+state 22
 
-    (20) expresion -> expresion DIV . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (26) expresion -> expresion MENOS . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
     expresion                      shift and go to state 34
 
-state 26
+state 23
 
-    (21) expresion -> expresion MOD . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (27) expresion -> expresion MULT . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
     expresion                      shift and go to state 35
 
+state 24
+
+    (28) expresion -> expresion DIV . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
+
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
+
+    expresion                      shift and go to state 36
+
+state 25
+
+    (29) expresion -> expresion MOD . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
+
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
+
+    expresion                      shift and go to state 37
+
+state 26
+
+    (10) declaracion -> TIPO ID . PUNTOYCOMA
+
+    PUNTOYCOMA      shift and go to state 38
+
+
 state 27
 
-    (22) expresion -> LPAREN expresion . RPAREN
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (11) asignacion -> ID ASIGNACION . expresion PUNTOYCOMA
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    RPAREN          shift and go to state 36
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 39
 
 state 28
 
-    (9) ciclo_for -> FOR LPAREN asignacion condicion . PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (13) ciclo_for -> FOR LPAREN . asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (11) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
 
-    PUNTOYCOMA      shift and go to state 37
+    ID              shift and go to state 41
 
+    asignacion                     shift and go to state 40
 
 state 29
 
-    (10) condicion -> expresion_rel .
+    (18) expresion -> LPAREN expresion . RPAREN
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-    PUNTOYCOMA      reduce using rule 10 (condicion -> expresion_rel .)
+    RPAREN          shift and go to state 42
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
 
 
 state 30
 
-    (11) expresion_rel -> expresion . MAYOR expresion
-    (12) expresion_rel -> expresion . MENOR expresion
-    (13) expresion_rel -> expresion . MAYORIGUAL expresion
-    (14) expresion_rel -> expresion . MENORIGUAL expresion
-    (15) expresion_rel -> expresion . IGUAL expresion
-    (16) expresion_rel -> expresion . DIF expresion
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (19) expresion -> ID .
 
-    MAYOR           shift and go to state 38
-    MENOR           shift and go to state 39
-    MAYORIGUAL      shift and go to state 40
-    MENORIGUAL      shift and go to state 41
-    IGUAL           shift and go to state 42
-    DIF             shift and go to state 43
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    RPAREN          reduce using rule 19 (expresion -> ID .)
+    MAS             reduce using rule 19 (expresion -> ID .)
+    MENOS           reduce using rule 19 (expresion -> ID .)
+    MULT            reduce using rule 19 (expresion -> ID .)
+    DIV             reduce using rule 19 (expresion -> ID .)
+    MOD             reduce using rule 19 (expresion -> ID .)
+    PUNTOYCOMA      reduce using rule 19 (expresion -> ID .)
+    MAYOR           reduce using rule 19 (expresion -> ID .)
+    MENOR           reduce using rule 19 (expresion -> ID .)
+    MAYORIGUAL      reduce using rule 19 (expresion -> ID .)
+    MENORIGUAL      reduce using rule 19 (expresion -> ID .)
+    IGUAL           reduce using rule 19 (expresion -> ID .)
+    DIF             reduce using rule 19 (expresion -> ID .)
+    OR              reduce using rule 19 (expresion -> ID .)
+    AND             reduce using rule 19 (expresion -> ID .)
 
 
 state 31
 
-    (17) expresion -> expresion MAS expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (23) expresion -> MENOS expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-  ! shift/reduce conflict for MAS resolved as shift
-  ! shift/reduce conflict for MENOS resolved as shift
-  ! shift/reduce conflict for MULT resolved as shift
-  ! shift/reduce conflict for DIV resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-    PUNTOYCOMA      reduce using rule 17 (expresion -> expresion MAS expresion .)
-    RPAREN          reduce using rule 17 (expresion -> expresion MAS expresion .)
-    MAYOR           reduce using rule 17 (expresion -> expresion MAS expresion .)
-    MENOR           reduce using rule 17 (expresion -> expresion MAS expresion .)
-    MAYORIGUAL      reduce using rule 17 (expresion -> expresion MAS expresion .)
-    MENORIGUAL      reduce using rule 17 (expresion -> expresion MAS expresion .)
-    IGUAL           reduce using rule 17 (expresion -> expresion MAS expresion .)
-    DIF             reduce using rule 17 (expresion -> expresion MAS expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    PUNTOYCOMA      reduce using rule 23 (expresion -> MENOS expresion .)
+    MAS             reduce using rule 23 (expresion -> MENOS expresion .)
+    MENOS           reduce using rule 23 (expresion -> MENOS expresion .)
+    MULT            reduce using rule 23 (expresion -> MENOS expresion .)
+    DIV             reduce using rule 23 (expresion -> MENOS expresion .)
+    MOD             reduce using rule 23 (expresion -> MENOS expresion .)
+    RPAREN          reduce using rule 23 (expresion -> MENOS expresion .)
+    MAYOR           reduce using rule 23 (expresion -> MENOS expresion .)
+    MENOR           reduce using rule 23 (expresion -> MENOS expresion .)
+    MAYORIGUAL      reduce using rule 23 (expresion -> MENOS expresion .)
+    MENORIGUAL      reduce using rule 23 (expresion -> MENOS expresion .)
+    IGUAL           reduce using rule 23 (expresion -> MENOS expresion .)
+    DIF             reduce using rule 23 (expresion -> MENOS expresion .)
+    OR              reduce using rule 23 (expresion -> MENOS expresion .)
+    AND             reduce using rule 23 (expresion -> MENOS expresion .)
 
-  ! MAS             [ reduce using rule 17 (expresion -> expresion MAS expresion .) ]
-  ! MENOS           [ reduce using rule 17 (expresion -> expresion MAS expresion .) ]
-  ! MULT            [ reduce using rule 17 (expresion -> expresion MAS expresion .) ]
-  ! DIV             [ reduce using rule 17 (expresion -> expresion MAS expresion .) ]
-  ! MOD             [ reduce using rule 17 (expresion -> expresion MAS expresion .) ]
+  ! MAS             [ shift and go to state 21 ]
+  ! MENOS           [ shift and go to state 22 ]
+  ! MULT            [ shift and go to state 23 ]
+  ! DIV             [ shift and go to state 24 ]
+  ! MOD             [ shift and go to state 25 ]
 
 
 state 32
 
-    (18) expresion -> expresion MENOS expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (24) expresion -> MAS expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-  ! shift/reduce conflict for MAS resolved as shift
-  ! shift/reduce conflict for MENOS resolved as shift
-  ! shift/reduce conflict for MULT resolved as shift
-  ! shift/reduce conflict for DIV resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-    PUNTOYCOMA      reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    RPAREN          reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    MAYOR           reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    MENOR           reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    MAYORIGUAL      reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    MENORIGUAL      reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    IGUAL           reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    DIF             reduce using rule 18 (expresion -> expresion MENOS expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    PUNTOYCOMA      reduce using rule 24 (expresion -> MAS expresion .)
+    MAS             reduce using rule 24 (expresion -> MAS expresion .)
+    MENOS           reduce using rule 24 (expresion -> MAS expresion .)
+    MULT            reduce using rule 24 (expresion -> MAS expresion .)
+    DIV             reduce using rule 24 (expresion -> MAS expresion .)
+    MOD             reduce using rule 24 (expresion -> MAS expresion .)
+    RPAREN          reduce using rule 24 (expresion -> MAS expresion .)
+    MAYOR           reduce using rule 24 (expresion -> MAS expresion .)
+    MENOR           reduce using rule 24 (expresion -> MAS expresion .)
+    MAYORIGUAL      reduce using rule 24 (expresion -> MAS expresion .)
+    MENORIGUAL      reduce using rule 24 (expresion -> MAS expresion .)
+    IGUAL           reduce using rule 24 (expresion -> MAS expresion .)
+    DIF             reduce using rule 24 (expresion -> MAS expresion .)
+    OR              reduce using rule 24 (expresion -> MAS expresion .)
+    AND             reduce using rule 24 (expresion -> MAS expresion .)
 
-  ! MAS             [ reduce using rule 18 (expresion -> expresion MENOS expresion .) ]
-  ! MENOS           [ reduce using rule 18 (expresion -> expresion MENOS expresion .) ]
-  ! MULT            [ reduce using rule 18 (expresion -> expresion MENOS expresion .) ]
-  ! DIV             [ reduce using rule 18 (expresion -> expresion MENOS expresion .) ]
-  ! MOD             [ reduce using rule 18 (expresion -> expresion MENOS expresion .) ]
+  ! MAS             [ shift and go to state 21 ]
+  ! MENOS           [ shift and go to state 22 ]
+  ! MULT            [ shift and go to state 23 ]
+  ! DIV             [ shift and go to state 24 ]
+  ! MOD             [ shift and go to state 25 ]
 
 
 state 33
 
-    (19) expresion -> expresion MULT expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (25) expresion -> expresion MAS expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-  ! shift/reduce conflict for MAS resolved as shift
-  ! shift/reduce conflict for MENOS resolved as shift
-  ! shift/reduce conflict for MULT resolved as shift
-  ! shift/reduce conflict for DIV resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-    PUNTOYCOMA      reduce using rule 19 (expresion -> expresion MULT expresion .)
-    RPAREN          reduce using rule 19 (expresion -> expresion MULT expresion .)
-    MAYOR           reduce using rule 19 (expresion -> expresion MULT expresion .)
-    MENOR           reduce using rule 19 (expresion -> expresion MULT expresion .)
-    MAYORIGUAL      reduce using rule 19 (expresion -> expresion MULT expresion .)
-    MENORIGUAL      reduce using rule 19 (expresion -> expresion MULT expresion .)
-    IGUAL           reduce using rule 19 (expresion -> expresion MULT expresion .)
-    DIF             reduce using rule 19 (expresion -> expresion MULT expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    PUNTOYCOMA      reduce using rule 25 (expresion -> expresion MAS expresion .)
+    MAS             reduce using rule 25 (expresion -> expresion MAS expresion .)
+    MENOS           reduce using rule 25 (expresion -> expresion MAS expresion .)
+    RPAREN          reduce using rule 25 (expresion -> expresion MAS expresion .)
+    MAYOR           reduce using rule 25 (expresion -> expresion MAS expresion .)
+    MENOR           reduce using rule 25 (expresion -> expresion MAS expresion .)
+    MAYORIGUAL      reduce using rule 25 (expresion -> expresion MAS expresion .)
+    MENORIGUAL      reduce using rule 25 (expresion -> expresion MAS expresion .)
+    IGUAL           reduce using rule 25 (expresion -> expresion MAS expresion .)
+    DIF             reduce using rule 25 (expresion -> expresion MAS expresion .)
+    OR              reduce using rule 25 (expresion -> expresion MAS expresion .)
+    AND             reduce using rule 25 (expresion -> expresion MAS expresion .)
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
 
-  ! MAS             [ reduce using rule 19 (expresion -> expresion MULT expresion .) ]
-  ! MENOS           [ reduce using rule 19 (expresion -> expresion MULT expresion .) ]
-  ! MULT            [ reduce using rule 19 (expresion -> expresion MULT expresion .) ]
-  ! DIV             [ reduce using rule 19 (expresion -> expresion MULT expresion .) ]
-  ! MOD             [ reduce using rule 19 (expresion -> expresion MULT expresion .) ]
+  ! MULT            [ reduce using rule 25 (expresion -> expresion MAS expresion .) ]
+  ! DIV             [ reduce using rule 25 (expresion -> expresion MAS expresion .) ]
+  ! MOD             [ reduce using rule 25 (expresion -> expresion MAS expresion .) ]
+  ! MAS             [ shift and go to state 21 ]
+  ! MENOS           [ shift and go to state 22 ]
 
 
 state 34
 
-    (20) expresion -> expresion DIV expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (26) expresion -> expresion MENOS expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-  ! shift/reduce conflict for MAS resolved as shift
-  ! shift/reduce conflict for MENOS resolved as shift
-  ! shift/reduce conflict for MULT resolved as shift
-  ! shift/reduce conflict for DIV resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-    PUNTOYCOMA      reduce using rule 20 (expresion -> expresion DIV expresion .)
-    RPAREN          reduce using rule 20 (expresion -> expresion DIV expresion .)
-    MAYOR           reduce using rule 20 (expresion -> expresion DIV expresion .)
-    MENOR           reduce using rule 20 (expresion -> expresion DIV expresion .)
-    MAYORIGUAL      reduce using rule 20 (expresion -> expresion DIV expresion .)
-    MENORIGUAL      reduce using rule 20 (expresion -> expresion DIV expresion .)
-    IGUAL           reduce using rule 20 (expresion -> expresion DIV expresion .)
-    DIF             reduce using rule 20 (expresion -> expresion DIV expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    PUNTOYCOMA      reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    MAS             reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    MENOS           reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    RPAREN          reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    MAYOR           reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    MENOR           reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    MAYORIGUAL      reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    MENORIGUAL      reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    IGUAL           reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    DIF             reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    OR              reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    AND             reduce using rule 26 (expresion -> expresion MENOS expresion .)
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
 
-  ! MAS             [ reduce using rule 20 (expresion -> expresion DIV expresion .) ]
-  ! MENOS           [ reduce using rule 20 (expresion -> expresion DIV expresion .) ]
-  ! MULT            [ reduce using rule 20 (expresion -> expresion DIV expresion .) ]
-  ! DIV             [ reduce using rule 20 (expresion -> expresion DIV expresion .) ]
-  ! MOD             [ reduce using rule 20 (expresion -> expresion DIV expresion .) ]
+  ! MULT            [ reduce using rule 26 (expresion -> expresion MENOS expresion .) ]
+  ! DIV             [ reduce using rule 26 (expresion -> expresion MENOS expresion .) ]
+  ! MOD             [ reduce using rule 26 (expresion -> expresion MENOS expresion .) ]
+  ! MAS             [ shift and go to state 21 ]
+  ! MENOS           [ shift and go to state 22 ]
 
 
 state 35
 
-    (21) expresion -> expresion MOD expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (27) expresion -> expresion MULT expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-  ! shift/reduce conflict for MAS resolved as shift
-  ! shift/reduce conflict for MENOS resolved as shift
-  ! shift/reduce conflict for MULT resolved as shift
-  ! shift/reduce conflict for DIV resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
-    PUNTOYCOMA      reduce using rule 21 (expresion -> expresion MOD expresion .)
-    RPAREN          reduce using rule 21 (expresion -> expresion MOD expresion .)
-    MAYOR           reduce using rule 21 (expresion -> expresion MOD expresion .)
-    MENOR           reduce using rule 21 (expresion -> expresion MOD expresion .)
-    MAYORIGUAL      reduce using rule 21 (expresion -> expresion MOD expresion .)
-    MENORIGUAL      reduce using rule 21 (expresion -> expresion MOD expresion .)
-    IGUAL           reduce using rule 21 (expresion -> expresion MOD expresion .)
-    DIF             reduce using rule 21 (expresion -> expresion MOD expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    PUNTOYCOMA      reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MAS             reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MENOS           reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MULT            reduce using rule 27 (expresion -> expresion MULT expresion .)
+    DIV             reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MOD             reduce using rule 27 (expresion -> expresion MULT expresion .)
+    RPAREN          reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MAYOR           reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MENOR           reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MAYORIGUAL      reduce using rule 27 (expresion -> expresion MULT expresion .)
+    MENORIGUAL      reduce using rule 27 (expresion -> expresion MULT expresion .)
+    IGUAL           reduce using rule 27 (expresion -> expresion MULT expresion .)
+    DIF             reduce using rule 27 (expresion -> expresion MULT expresion .)
+    OR              reduce using rule 27 (expresion -> expresion MULT expresion .)
+    AND             reduce using rule 27 (expresion -> expresion MULT expresion .)
 
-  ! MAS             [ reduce using rule 21 (expresion -> expresion MOD expresion .) ]
-  ! MENOS           [ reduce using rule 21 (expresion -> expresion MOD expresion .) ]
-  ! MULT            [ reduce using rule 21 (expresion -> expresion MOD expresion .) ]
-  ! DIV             [ reduce using rule 21 (expresion -> expresion MOD expresion .) ]
-  ! MOD             [ reduce using rule 21 (expresion -> expresion MOD expresion .) ]
+  ! MAS             [ shift and go to state 21 ]
+  ! MENOS           [ shift and go to state 22 ]
+  ! MULT            [ shift and go to state 23 ]
+  ! DIV             [ shift and go to state 24 ]
+  ! MOD             [ shift and go to state 25 ]
 
 
 state 36
 
-    (22) expresion -> LPAREN expresion RPAREN .
+    (28) expresion -> expresion DIV expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-    PUNTOYCOMA      reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MAS             reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MENOS           reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MULT            reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    DIV             reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MOD             reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    RPAREN          reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MAYOR           reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MENOR           reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MAYORIGUAL      reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    MENORIGUAL      reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    IGUAL           reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
-    DIF             reduce using rule 22 (expresion -> LPAREN expresion RPAREN .)
+    PUNTOYCOMA      reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MAS             reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MENOS           reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MULT            reduce using rule 28 (expresion -> expresion DIV expresion .)
+    DIV             reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MOD             reduce using rule 28 (expresion -> expresion DIV expresion .)
+    RPAREN          reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MAYOR           reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MENOR           reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MAYORIGUAL      reduce using rule 28 (expresion -> expresion DIV expresion .)
+    MENORIGUAL      reduce using rule 28 (expresion -> expresion DIV expresion .)
+    IGUAL           reduce using rule 28 (expresion -> expresion DIV expresion .)
+    DIF             reduce using rule 28 (expresion -> expresion DIV expresion .)
+    OR              reduce using rule 28 (expresion -> expresion DIV expresion .)
+    AND             reduce using rule 28 (expresion -> expresion DIV expresion .)
+
+  ! MAS             [ shift and go to state 21 ]
+  ! MENOS           [ shift and go to state 22 ]
+  ! MULT            [ shift and go to state 23 ]
+  ! DIV             [ shift and go to state 24 ]
+  ! MOD             [ shift and go to state 25 ]
 
 
 state 37
 
-    (9) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA . asignacion_simple RPAREN LBRACE cuerpo RBRACE
-    (8) asignacion_simple -> . ID ASIGNACION expresion
+    (29) expresion -> expresion MOD expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-    ID              shift and go to state 45
+    PUNTOYCOMA      reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MAS             reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MENOS           reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MULT            reduce using rule 29 (expresion -> expresion MOD expresion .)
+    DIV             reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MOD             reduce using rule 29 (expresion -> expresion MOD expresion .)
+    RPAREN          reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MAYOR           reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MENOR           reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MAYORIGUAL      reduce using rule 29 (expresion -> expresion MOD expresion .)
+    MENORIGUAL      reduce using rule 29 (expresion -> expresion MOD expresion .)
+    IGUAL           reduce using rule 29 (expresion -> expresion MOD expresion .)
+    DIF             reduce using rule 29 (expresion -> expresion MOD expresion .)
+    OR              reduce using rule 29 (expresion -> expresion MOD expresion .)
+    AND             reduce using rule 29 (expresion -> expresion MOD expresion .)
 
-    asignacion_simple              shift and go to state 44
+  ! MAS             [ shift and go to state 21 ]
+  ! MENOS           [ shift and go to state 22 ]
+  ! MULT            [ shift and go to state 23 ]
+  ! DIV             [ shift and go to state 24 ]
+  ! MOD             [ shift and go to state 25 ]
+
 
 state 38
 
-    (11) expresion_rel -> expresion MAYOR . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (10) declaracion -> TIPO ID PUNTOYCOMA .
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    TIPO            reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    ID              reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    FOR             reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    LPAREN          reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    ENTERO          reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    REAL            reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    CADENA          reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    MENOS           reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    MAS             reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    $end            reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
+    RBRACE          reduce using rule 10 (declaracion -> TIPO ID PUNTOYCOMA .)
 
-    expresion                      shift and go to state 46
 
 state 39
 
-    (12) expresion_rel -> expresion MENOR . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (11) asignacion -> ID ASIGNACION expresion . PUNTOYCOMA
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    PUNTOYCOMA      shift and go to state 43
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
 
-    expresion                      shift and go to state 47
 
 state 40
 
-    (13) expresion_rel -> expresion MAYORIGUAL . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (13) ciclo_for -> FOR LPAREN asignacion . condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (15) condicion -> . expresion_rel
+    (16) condicion -> . expresion_rel OR expresion_rel
+    (17) condicion -> . expresion_rel AND expresion_rel
+    (30) expresion_rel -> . expresion MAYOR expresion
+    (31) expresion_rel -> . expresion MENOR expresion
+    (32) expresion_rel -> . expresion MAYORIGUAL expresion
+    (33) expresion_rel -> . expresion MENORIGUAL expresion
+    (34) expresion_rel -> . expresion IGUAL expresion
+    (35) expresion_rel -> . expresion DIF expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
-    expresion                      shift and go to state 48
+    condicion                      shift and go to state 44
+    expresion_rel                  shift and go to state 45
+    expresion                      shift and go to state 46
 
 state 41
 
-    (14) expresion_rel -> expresion MENORIGUAL . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (11) asignacion -> ID . ASIGNACION expresion PUNTOYCOMA
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    ASIGNACION      shift and go to state 27
 
-    expresion                      shift and go to state 49
 
 state 42
 
-    (15) expresion_rel -> expresion IGUAL . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (18) expresion -> LPAREN expresion RPAREN .
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    PUNTOYCOMA      reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MAS             reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MENOS           reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MULT            reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    DIV             reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MOD             reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    RPAREN          reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MAYOR           reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MENOR           reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MAYORIGUAL      reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    MENORIGUAL      reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    IGUAL           reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    DIF             reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    OR              reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
+    AND             reduce using rule 18 (expresion -> LPAREN expresion RPAREN .)
 
-    expresion                      shift and go to state 50
 
 state 43
 
-    (16) expresion_rel -> expresion DIF . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (11) asignacion -> ID ASIGNACION expresion PUNTOYCOMA .
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    TIPO            reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    ID              reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    FOR             reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    LPAREN          reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    ENTERO          reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    REAL            reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    CADENA          reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    MENOS           reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    MAS             reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    $end            reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
+    RBRACE          reduce using rule 11 (asignacion -> ID ASIGNACION expresion PUNTOYCOMA .)
 
-    expresion                      shift and go to state 51
 
 state 44
 
-    (9) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple . RPAREN LBRACE cuerpo RBRACE
+    (13) ciclo_for -> FOR LPAREN asignacion condicion . PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
 
-    RPAREN          shift and go to state 52
+    PUNTOYCOMA      shift and go to state 47
 
 
 state 45
 
-    (8) asignacion_simple -> ID . ASIGNACION expresion
+    (15) condicion -> expresion_rel .
+    (16) condicion -> expresion_rel . OR expresion_rel
+    (17) condicion -> expresion_rel . AND expresion_rel
 
-    ASIGNACION      shift and go to state 53
+    PUNTOYCOMA      reduce using rule 15 (condicion -> expresion_rel .)
+    OR              shift and go to state 48
+    AND             shift and go to state 49
 
 
 state 46
 
-    (11) expresion_rel -> expresion MAYOR expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (30) expresion_rel -> expresion . MAYOR expresion
+    (31) expresion_rel -> expresion . MENOR expresion
+    (32) expresion_rel -> expresion . MAYORIGUAL expresion
+    (33) expresion_rel -> expresion . MENORIGUAL expresion
+    (34) expresion_rel -> expresion . IGUAL expresion
+    (35) expresion_rel -> expresion . DIF expresion
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-    PUNTOYCOMA      reduce using rule 11 (expresion_rel -> expresion MAYOR expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    MAYOR           shift and go to state 50
+    MENOR           shift and go to state 51
+    MAYORIGUAL      shift and go to state 52
+    MENORIGUAL      shift and go to state 53
+    IGUAL           shift and go to state 54
+    DIF             shift and go to state 55
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
 
 
 state 47
 
-    (12) expresion_rel -> expresion MENOR expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (13) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA . asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (12) asignacion_simple -> . ID ASIGNACION expresion
 
-    PUNTOYCOMA      reduce using rule 12 (expresion_rel -> expresion MENOR expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    ID              shift and go to state 57
 
+    asignacion_simple              shift and go to state 56
 
 state 48
 
-    (13) expresion_rel -> expresion MAYORIGUAL expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (16) condicion -> expresion_rel OR . expresion_rel
+    (30) expresion_rel -> . expresion MAYOR expresion
+    (31) expresion_rel -> . expresion MENOR expresion
+    (32) expresion_rel -> . expresion MAYORIGUAL expresion
+    (33) expresion_rel -> . expresion MENORIGUAL expresion
+    (34) expresion_rel -> . expresion IGUAL expresion
+    (35) expresion_rel -> . expresion DIF expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    PUNTOYCOMA      reduce using rule 13 (expresion_rel -> expresion MAYORIGUAL expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion_rel                  shift and go to state 58
+    expresion                      shift and go to state 46
 
 state 49
 
-    (14) expresion_rel -> expresion MENORIGUAL expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (17) condicion -> expresion_rel AND . expresion_rel
+    (30) expresion_rel -> . expresion MAYOR expresion
+    (31) expresion_rel -> . expresion MENOR expresion
+    (32) expresion_rel -> . expresion MAYORIGUAL expresion
+    (33) expresion_rel -> . expresion MENORIGUAL expresion
+    (34) expresion_rel -> . expresion IGUAL expresion
+    (35) expresion_rel -> . expresion DIF expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    PUNTOYCOMA      reduce using rule 14 (expresion_rel -> expresion MENORIGUAL expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion_rel                  shift and go to state 59
+    expresion                      shift and go to state 46
 
 state 50
 
-    (15) expresion_rel -> expresion IGUAL expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (30) expresion_rel -> expresion MAYOR . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    PUNTOYCOMA      reduce using rule 15 (expresion_rel -> expresion IGUAL expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 60
 
 state 51
 
-    (16) expresion_rel -> expresion DIF expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (31) expresion_rel -> expresion MENOR . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    PUNTOYCOMA      reduce using rule 16 (expresion_rel -> expresion DIF expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 61
 
 state 52
 
-    (9) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN . LBRACE cuerpo RBRACE
+    (32) expresion_rel -> expresion MAYORIGUAL . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    LBRACE          shift and go to state 54
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 62
 
 state 53
 
-    (8) asignacion_simple -> ID ASIGNACION . expresion
-    (17) expresion -> . expresion MAS expresion
-    (18) expresion -> . expresion MENOS expresion
-    (19) expresion -> . expresion MULT expresion
-    (20) expresion -> . expresion DIV expresion
-    (21) expresion -> . expresion MOD expresion
-    (22) expresion -> . LPAREN expresion RPAREN
-    (23) expresion -> . ID
-    (24) expresion -> . ENTERO
-    (25) expresion -> . REAL
-    (26) expresion -> . CADENA
+    (33) expresion_rel -> expresion MENORIGUAL . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    LPAREN          shift and go to state 16
-    ID              shift and go to state 14
-    ENTERO          shift and go to state 17
-    REAL            shift and go to state 18
-    CADENA          shift and go to state 19
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
-    expresion                      shift and go to state 55
+    expresion                      shift and go to state 63
 
 state 54
 
-    (9) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE . cuerpo RBRACE
-    (27) cuerpo -> . cuerpo sentencia
-    (28) cuerpo -> . sentencia
-    (29) cuerpo -> . empty
-    (3) sentencia -> . declaracion
-    (4) sentencia -> . asignacion
-    (5) sentencia -> . ciclo_for
-    (30) empty -> .
-    (6) declaracion -> . TIPO ID PUNTOYCOMA
-    (7) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
-    (9) ciclo_for -> . FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (34) expresion_rel -> expresion IGUAL . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-  ! shift/reduce conflict for TIPO resolved as shift
-  ! shift/reduce conflict for ID resolved as shift
-  ! shift/reduce conflict for FOR resolved as shift
-    RBRACE          reduce using rule 30 (empty -> .)
-    TIPO            shift and go to state 6
-    ID              shift and go to state 7
-    FOR             shift and go to state 8
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
-  ! TIPO            [ reduce using rule 30 (empty -> .) ]
-  ! ID              [ reduce using rule 30 (empty -> .) ]
-  ! FOR             [ reduce using rule 30 (empty -> .) ]
-
-    asignacion                     shift and go to state 4
-    cuerpo                         shift and go to state 56
-    sentencia                      shift and go to state 57
-    empty                          shift and go to state 58
-    declaracion                    shift and go to state 3
-    ciclo_for                      shift and go to state 5
+    expresion                      shift and go to state 64
 
 state 55
 
-    (8) asignacion_simple -> ID ASIGNACION expresion .
-    (17) expresion -> expresion . MAS expresion
-    (18) expresion -> expresion . MENOS expresion
-    (19) expresion -> expresion . MULT expresion
-    (20) expresion -> expresion . DIV expresion
-    (21) expresion -> expresion . MOD expresion
+    (35) expresion_rel -> expresion DIF . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
 
-    RPAREN          reduce using rule 8 (asignacion_simple -> ID ASIGNACION expresion .)
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    MULT            shift and go to state 24
-    DIV             shift and go to state 25
-    MOD             shift and go to state 26
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
 
+    expresion                      shift and go to state 65
 
 state 56
 
-    (9) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo . RBRACE
-    (27) cuerpo -> cuerpo . sentencia
-    (3) sentencia -> . declaracion
-    (4) sentencia -> . asignacion
-    (5) sentencia -> . ciclo_for
-    (6) declaracion -> . TIPO ID PUNTOYCOMA
-    (7) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
-    (9) ciclo_for -> . FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (13) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple . RPAREN LBRACE cuerpo RBRACE
 
-    RBRACE          shift and go to state 59
-    TIPO            shift and go to state 6
-    ID              shift and go to state 7
-    FOR             shift and go to state 8
+    RPAREN          shift and go to state 66
 
-    asignacion                     shift and go to state 4
-    sentencia                      shift and go to state 60
-    declaracion                    shift and go to state 3
-    ciclo_for                      shift and go to state 5
 
 state 57
 
-    (28) cuerpo -> sentencia .
+    (12) asignacion_simple -> ID . ASIGNACION expresion
 
-    RBRACE          reduce using rule 28 (cuerpo -> sentencia .)
-    TIPO            reduce using rule 28 (cuerpo -> sentencia .)
-    ID              reduce using rule 28 (cuerpo -> sentencia .)
-    FOR             reduce using rule 28 (cuerpo -> sentencia .)
+    ASIGNACION      shift and go to state 67
 
 
 state 58
 
-    (29) cuerpo -> empty .
+    (16) condicion -> expresion_rel OR expresion_rel .
 
-    RBRACE          reduce using rule 29 (cuerpo -> empty .)
-    TIPO            reduce using rule 29 (cuerpo -> empty .)
-    ID              reduce using rule 29 (cuerpo -> empty .)
-    FOR             reduce using rule 29 (cuerpo -> empty .)
+    PUNTOYCOMA      reduce using rule 16 (condicion -> expresion_rel OR expresion_rel .)
 
 
 state 59
 
-    (9) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .
+    (17) condicion -> expresion_rel AND expresion_rel .
 
-    TIPO            reduce using rule 9 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
-    ID              reduce using rule 9 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
-    FOR             reduce using rule 9 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
-    $end            reduce using rule 9 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
-    RBRACE          reduce using rule 9 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    PUNTOYCOMA      reduce using rule 17 (condicion -> expresion_rel AND expresion_rel .)
 
 
 state 60
 
-    (27) cuerpo -> cuerpo sentencia .
+    (30) expresion_rel -> expresion MAYOR expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
 
-    RBRACE          reduce using rule 27 (cuerpo -> cuerpo sentencia .)
-    TIPO            reduce using rule 27 (cuerpo -> cuerpo sentencia .)
-    ID              reduce using rule 27 (cuerpo -> cuerpo sentencia .)
-    FOR             reduce using rule 27 (cuerpo -> cuerpo sentencia .)
+    OR              reduce using rule 30 (expresion_rel -> expresion MAYOR expresion .)
+    AND             reduce using rule 30 (expresion_rel -> expresion MAYOR expresion .)
+    PUNTOYCOMA      reduce using rule 30 (expresion_rel -> expresion MAYOR expresion .)
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
 
-WARNING: 
-WARNING: Conflicts:
-WARNING: 
-WARNING: shift/reduce conflict for MAS in state 31 resolved as shift
-WARNING: shift/reduce conflict for MENOS in state 31 resolved as shift
-WARNING: shift/reduce conflict for MULT in state 31 resolved as shift
-WARNING: shift/reduce conflict for DIV in state 31 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 31 resolved as shift
-WARNING: shift/reduce conflict for MAS in state 32 resolved as shift
-WARNING: shift/reduce conflict for MENOS in state 32 resolved as shift
-WARNING: shift/reduce conflict for MULT in state 32 resolved as shift
-WARNING: shift/reduce conflict for DIV in state 32 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 32 resolved as shift
-WARNING: shift/reduce conflict for MAS in state 33 resolved as shift
-WARNING: shift/reduce conflict for MENOS in state 33 resolved as shift
-WARNING: shift/reduce conflict for MULT in state 33 resolved as shift
-WARNING: shift/reduce conflict for DIV in state 33 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 33 resolved as shift
-WARNING: shift/reduce conflict for MAS in state 34 resolved as shift
-WARNING: shift/reduce conflict for MENOS in state 34 resolved as shift
-WARNING: shift/reduce conflict for MULT in state 34 resolved as shift
-WARNING: shift/reduce conflict for DIV in state 34 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 34 resolved as shift
-WARNING: shift/reduce conflict for MAS in state 35 resolved as shift
-WARNING: shift/reduce conflict for MENOS in state 35 resolved as shift
-WARNING: shift/reduce conflict for MULT in state 35 resolved as shift
-WARNING: shift/reduce conflict for DIV in state 35 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 35 resolved as shift
-WARNING: shift/reduce conflict for TIPO in state 54 resolved as shift
-WARNING: shift/reduce conflict for ID in state 54 resolved as shift
-WARNING: shift/reduce conflict for FOR in state 54 resolved as shift
+
+state 61
+
+    (31) expresion_rel -> expresion MENOR expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
+
+    OR              reduce using rule 31 (expresion_rel -> expresion MENOR expresion .)
+    AND             reduce using rule 31 (expresion_rel -> expresion MENOR expresion .)
+    PUNTOYCOMA      reduce using rule 31 (expresion_rel -> expresion MENOR expresion .)
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
+
+
+state 62
+
+    (32) expresion_rel -> expresion MAYORIGUAL expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
+
+    OR              reduce using rule 32 (expresion_rel -> expresion MAYORIGUAL expresion .)
+    AND             reduce using rule 32 (expresion_rel -> expresion MAYORIGUAL expresion .)
+    PUNTOYCOMA      reduce using rule 32 (expresion_rel -> expresion MAYORIGUAL expresion .)
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
+
+
+state 63
+
+    (33) expresion_rel -> expresion MENORIGUAL expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
+
+    OR              reduce using rule 33 (expresion_rel -> expresion MENORIGUAL expresion .)
+    AND             reduce using rule 33 (expresion_rel -> expresion MENORIGUAL expresion .)
+    PUNTOYCOMA      reduce using rule 33 (expresion_rel -> expresion MENORIGUAL expresion .)
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
+
+
+state 64
+
+    (34) expresion_rel -> expresion IGUAL expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
+
+    OR              reduce using rule 34 (expresion_rel -> expresion IGUAL expresion .)
+    AND             reduce using rule 34 (expresion_rel -> expresion IGUAL expresion .)
+    PUNTOYCOMA      reduce using rule 34 (expresion_rel -> expresion IGUAL expresion .)
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
+
+
+state 65
+
+    (35) expresion_rel -> expresion DIF expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
+
+    OR              reduce using rule 35 (expresion_rel -> expresion DIF expresion .)
+    AND             reduce using rule 35 (expresion_rel -> expresion DIF expresion .)
+    PUNTOYCOMA      reduce using rule 35 (expresion_rel -> expresion DIF expresion .)
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
+
+
+state 66
+
+    (13) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN . LBRACE cuerpo RBRACE
+
+    LBRACE          shift and go to state 68
+
+
+state 67
+
+    (12) asignacion_simple -> ID ASIGNACION . expresion
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
+
+    LPAREN          shift and go to state 13
+    ID              shift and go to state 30
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
+
+    expresion                      shift and go to state 69
+
+state 68
+
+    (13) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE . cuerpo RBRACE
+    (14) cuerpo -> . lista_sentencias_opt
+    (2) lista_sentencias_opt -> . lista_sentencias
+    (3) lista_sentencias_opt -> . empty
+    (4) lista_sentencias -> . lista_sentencias sentencia
+    (5) lista_sentencias -> . sentencia
+    (36) empty -> .
+    (6) sentencia -> . declaracion
+    (7) sentencia -> . asignacion
+    (8) sentencia -> . ciclo_for
+    (9) sentencia -> . expresion PUNTOYCOMA
+    (10) declaracion -> . TIPO ID PUNTOYCOMA
+    (11) asignacion -> . ID ASIGNACION expresion PUNTOYCOMA
+    (13) ciclo_for -> . FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE
+    (18) expresion -> . LPAREN expresion RPAREN
+    (19) expresion -> . ID
+    (20) expresion -> . ENTERO
+    (21) expresion -> . REAL
+    (22) expresion -> . CADENA
+    (23) expresion -> . MENOS expresion
+    (24) expresion -> . MAS expresion
+    (25) expresion -> . expresion MAS expresion
+    (26) expresion -> . expresion MENOS expresion
+    (27) expresion -> . expresion MULT expresion
+    (28) expresion -> . expresion DIV expresion
+    (29) expresion -> . expresion MOD expresion
+
+    RBRACE          reduce using rule 36 (empty -> .)
+    TIPO            shift and go to state 10
+    ID              shift and go to state 11
+    FOR             shift and go to state 12
+    LPAREN          shift and go to state 13
+    ENTERO          shift and go to state 14
+    REAL            shift and go to state 15
+    CADENA          shift and go to state 16
+    MENOS           shift and go to state 17
+    MAS             shift and go to state 18
+
+    asignacion                     shift and go to state 7
+    cuerpo                         shift and go to state 70
+    lista_sentencias_opt           shift and go to state 71
+    lista_sentencias               shift and go to state 3
+    empty                          shift and go to state 4
+    sentencia                      shift and go to state 5
+    declaracion                    shift and go to state 6
+    ciclo_for                      shift and go to state 8
+    expresion                      shift and go to state 9
+
+state 69
+
+    (12) asignacion_simple -> ID ASIGNACION expresion .
+    (25) expresion -> expresion . MAS expresion
+    (26) expresion -> expresion . MENOS expresion
+    (27) expresion -> expresion . MULT expresion
+    (28) expresion -> expresion . DIV expresion
+    (29) expresion -> expresion . MOD expresion
+
+    RPAREN          reduce using rule 12 (asignacion_simple -> ID ASIGNACION expresion .)
+    MAS             shift and go to state 21
+    MENOS           shift and go to state 22
+    MULT            shift and go to state 23
+    DIV             shift and go to state 24
+    MOD             shift and go to state 25
+
+
+state 70
+
+    (13) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo . RBRACE
+
+    RBRACE          shift and go to state 72
+
+
+state 71
+
+    (14) cuerpo -> lista_sentencias_opt .
+
+    RBRACE          reduce using rule 14 (cuerpo -> lista_sentencias_opt .)
+
+
+state 72
+
+    (13) ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .
+
+    TIPO            reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    ID              reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    FOR             reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    LPAREN          reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    ENTERO          reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    REAL            reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    CADENA          reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    MENOS           reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    MAS             reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    $end            reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+    RBRACE          reduce using rule 13 (ciclo_for -> FOR LPAREN asignacion condicion PUNTOYCOMA asignacion_simple RPAREN LBRACE cuerpo RBRACE .)
+
