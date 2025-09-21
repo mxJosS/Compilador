@@ -1,19 +1,25 @@
+# main.py
 import tkinter as tk
 from tkinter import ttk
-from parser import parser, symbol_table, error_table
 from lexer import lexer as lex_inst
-from tables import LexemeTable
+from parser import parser
+from tables import symbol_table, error_table, lexeme_table
 
-# ---------------- Gutter: números de línea ----------------
+# ---------------- Gutter (números de línea) ----------------
 class LineNumbers(tk.Canvas):
-    def __init__(self, master, textwidget=None, **kwargs):
+    def __init__(self, master, textwidget, **kwargs):
         super().__init__(master, width=48, highlightthickness=0, **kwargs)
         self.textwidget = textwidget
 
-    def redraw(self, *args):
-        self.delete("all")
-        if not self.textwidget:
+    def redraw(self, *_):
+        # Si el Text aún no está listo, reintenta un frame después
+        try:
+            _ = self.textwidget.dlineinfo("1.0")
+        except tk.TclError:
+            self.after(16, self.redraw)
             return
+
+        self.delete("all")
         i = self.textwidget.index("@0,0")
         while True:
             dline = self.textwidget.dlineinfo(i)
@@ -21,15 +27,16 @@ class LineNumbers(tk.Canvas):
                 break
             y = dline[1]
             linenum = str(i).split(".")[0]
-            self.create_text(44, y, anchor="ne", text=linenum, font=("Consolas", 10))
+            self.create_text(44, y, anchor="ne", text=linenum,
+                             font=("Consolas", 10), fill="#111827")
             i = self.textwidget.index(f"{i}+1line")
 
-lexeme_table = LexemeTable()
-
+# ---------------- Acciones ----------------
 def analizar():
     # Limpiar UI
     for w in sym_table.get_children(): sym_table.delete(w)
     for w in err_table.get_children(): err_table.delete(w)
+
     # Limpiar modelos
     symbol_table.clear()
     error_table.clear()
@@ -37,33 +44,49 @@ def analizar():
 
     codigo = editor.get("1.0", tk.END)
 
-    # PASO 1: pre-scan léxico (llenar lexemas). No agregamos TIPO para evitar 'meow/cat/cats' redundantes
+    # PASO 1: tokenizar para poblar Tabla de lexemas (con tipo en literales)
     lex_inst.lineno = 1
     lex_inst.input(codigo)
     while True:
         tok = lex_inst.token()
         if not tok:
             break
-        if tok.type == 'TIPO':
-            continue
-        lex = tok.value if tok.type == 'CADENA' else str(tok.value)
-        lexeme_table.add(lex)
 
-    # PASO 2: parsear (reinyectar y reiniciar líneas)
+        # OMITIR palabras reservadas que no deben listarse: cat/cats/meow y for
+        if tok.type in ("TIPO", "FOR"):
+            continue
+
+        # Lexema visible
+        lex = tok.value if tok.type == 'CADENA' else str(tok.value)
+
+        # Tipo SOLO para literales
+        t = None
+        if tok.type == 'CADENA':
+            t = 'meow'
+        elif tok.type == 'ENTERO':
+            t = 'cat'
+        elif tok.type == 'REAL':
+            t = 'cats'
+
+        lexeme_table.add(lex, t)
+
+    # PASO 2: parsear con el MISMO lexer (reseteado) para llenar símbolos/errores
     lex_inst.lineno = 1
     lex_inst.input(codigo)
     parser.parse(codigo, lexer=lex_inst)
 
-    # PASO 3: completar tipo de IDs declarados
+    # PASO 3: completar tipo de IDs declarados en la tabla de lexemas
     for lexema, tipo in symbol_table.rows():
         lexeme_table.set_type_if_id(lexema, tipo)
 
-    # Cargar tablas UI
-    for lex, tipo in lexeme_table.rows():
-        sym_table.insert('', 'end', values=(lex, tipo if tipo else ""))
+    # Poblar UI (con zebra)
+    for i, (lex, tipo) in enumerate(lexeme_table.rows()):
+        tag = "odd" if i % 2 else "even"
+        sym_table.insert('', 'end', values=(lex, tipo if tipo else ""), tags=(tag,))
 
-    for token, lexema, renglon, desc in error_table.rows():
-        err_table.insert('', 'end', values=(token, lexema, renglon, desc))
+    for i, (token, lexema, renglon, desc) in enumerate(error_table.rows()):
+        tag = "odd" if i % 2 else "even"
+        err_table.insert('', 'end', values=(token, lexema, renglon, desc), tags=(tag,))
 
     gutter.redraw()
 
@@ -73,113 +96,124 @@ def limpiar():
     for w in err_table.get_children(): err_table.delete(w)
     symbol_table.clear()
     error_table.clear()
+    lexeme_table.clear()
     lex_inst.lineno = 1
     gutter.redraw()
 
 # ---------------- UI ----------------
 root = tk.Tk()
 root.title("Compilador U1 - Automatas II (FOR)")
-root.geometry("1100x700")
+root.geometry("1100x680")
 
+# ----- ESTILOS BONITOS -----
 style = ttk.Style(root)
-style.configure("Treeview.Heading", font=("Segoe UI", 10, "bold"))
-style.configure("Blue.Treeview", font=("Segoe UI", 11), rowheight=28)
-style.map("Treeview", background=[('selected', '#cfe8ff')])
+style.theme_use("clam")
 
+style.configure("Title.TLabel", font=("Segoe UI", 11, "bold"))
+
+style.configure("Blue.Treeview", font=("Segoe UI", 10), rowheight=26, borderwidth=0)
+style.map("Blue.Treeview", background=[("selected", "#cfe8ff")])
+style.configure("Blue.Treeview.Heading", font=("Segoe UI", 10, "bold"), padding=6)
+
+# Layout principal
 paned = ttk.PanedWindow(root, orient='horizontal')
 paned.pack(fill='both', expand=True, padx=8, pady=8)
 
-# Izquierda: editor con gutter
+# ----- Izquierda: editor con gutter -----
 left = ttk.Frame(paned)
-ttk.Label(left, text="Entrada", font=("Segoe UI", 11, "bold")).pack(anchor='w')
+left.configure(padding=0)
+ttk.Label(left, text="Entrada", style="Title.TLabel").pack(anchor='w')
 
 editor_frame = ttk.Frame(left)
 editor_frame.pack(fill='both', expand=True, pady=(4,6))
 
-yscroll = ttk.Scrollbar(editor_frame, orient='vertical')
-yscroll.pack(side='right', fill='y')
+ys = ttk.Scrollbar(editor_frame, orient='vertical')
+ys.pack(side='right', fill='y')
 
+# Gutter primero
 gutter = LineNumbers(editor_frame, None, bg="#f3f4f6")
 gutter.pack(side='left', fill='y')
 
+# Editor
 editor = tk.Text(editor_frame, height=25, wrap='none', font=("Consolas", 11), undo=True)
 editor.pack(side='left', fill='both', expand=True)
-
 gutter.textwidget = editor
 
-def _yscroll_proxy(*args):
-    yscroll.set(*args)
+# Sincroniza scroll vertical y repinta números
+def _sync_scroll(first, last):
+    ys.set(first, last)
     gutter.redraw()
-editor.configure(yscrollcommand=_yscroll_proxy)
-yscroll.config(command=editor.yview)
+editor.configure(yscrollcommand=_sync_scroll)
+ys.config(command=editor.yview)
 
-xscroll = ttk.Scrollbar(left, orient='horizontal', command=editor.xview)
-editor.configure(xscrollcommand=xscroll.set)
-xscroll.pack(fill='x')
+# Scroll horizontal
+xs = ttk.Scrollbar(left, orient='horizontal', command=editor.xview)
+editor.configure(xscrollcommand=xs.set)
+xs.pack(fill='x')
+
+# Redibuja gutter en cambios/scroll/visibilidad
+def _on_any_change(event=None): gutter.redraw()
+for seq in ("<KeyRelease>", "<MouseWheel>", "<Button-4>", "<Button-5>",
+            "<Configure>", "<Visibility>"):
+    editor.bind(seq, _on_any_change)
 
 def _on_modified(event=None):
     editor.edit_modified(False)
     gutter.redraw()
-editor.edit_modified(False)
-editor.bind('<<Modified>>', _on_modified)
-editor.bind('<KeyRelease>',      lambda e: gutter.redraw())
-editor.bind('<ButtonRelease-1>', lambda e: gutter.redraw())
-editor.bind('<MouseWheel>',      lambda e: gutter.redraw())
-editor.bind('<Button-4>',        lambda e: gutter.redraw())
-editor.bind('<Button-5>',        lambda e: gutter.redraw())
-editor.bind('<Configure>',       lambda e: gutter.redraw())
+editor.bind("<<Modified>>", _on_modified)
 
-btns = ttk.Frame(left)
-btns.pack(anchor='e', pady=(2,0))
+# Timer de seguridad
+def _tick():
+    gutter.redraw()
+    root.after(120, _tick)
+root.after(200, _tick)
+
+# Botones
+btns = ttk.Frame(left); btns.pack(anchor='e', pady=(2,0))
 ttk.Button(btns, text="Analizar", command=analizar).pack(side='left', padx=(0,8))
 ttk.Button(btns, text="Limpiar",  command=limpiar).pack(side='left')
 
 paned.add(left, weight=1)
 
-# Derecha: tablas
+# ----- Derecha: tablas -----
 right = ttk.Frame(paned)
 paned.add(right, weight=1)
 
-ttk.Label(right, text="Tabla de lexemas", font=("Segoe UI", 11, "bold")).pack(anchor='w')
+ttk.Label(right, text="Tabla de lexemas", style="Title.TLabel").pack(anchor='w')
 sym_table = ttk.Treeview(
     right, columns=("Lexema","Tipo"), show="headings", height=12, style="Blue.Treeview"
 )
-sym_table.heading("Lexema", text="Lexema", anchor='center')
-sym_table.heading("Tipo",   text="Tipo",   anchor='center')
-sym_table.column("Lexema", width=300, anchor='center', stretch=True)
-sym_table.column("Tipo",   width=180, anchor='center', stretch=True)
+sym_table.heading("Lexema", text="Lexema")
+sym_table.heading("Tipo",   text="Tipo")
+sym_table.column("Lexema", width=280, anchor="w", stretch=True)
+sym_table.column("Tipo",   width=140, anchor="center")
 sym_table.pack(fill='x', pady=(4,10))
 
-ttk.Label(right, text="Tabla de errores", font=("Segoe UI", 11, "bold")).pack(anchor='w')
-err_wrap = ttk.Frame(right)
-err_wrap.pack(fill='both', expand=True, pady=(4,0))
-
+ttk.Label(right, text="Tabla de errores", style="Title.TLabel").pack(anchor='w')
 err_table = ttk.Treeview(
-    err_wrap,
-    columns=("Token","Lexema","Renglón","Descripción"),
-    show="headings",
-    height=12,
-    style="Blue.Treeview"
+    right, columns=("Token","Lexema","Renglón","Descripción"),
+    show="headings", height=12, style="Blue.Treeview"
 )
-err_table["displaycolumns"] = ("Token","Lexema","Renglón","Descripción")
-err_table.heading("Token",       text="Token",       anchor='center')
-err_table.heading("Lexema",      text="Lexema",      anchor='center')
-err_table.heading("Renglón",     text="Renglón",     anchor='center')
-err_table.heading("Descripción", text="Descripción", anchor='center')
-err_table.column("Token",       width=120, anchor='center', stretch=True)
-err_table.column("Lexema",      width=260, anchor='center', stretch=True)
-err_table.column("Renglón",     width=110, anchor='center', stretch=True)
-err_table.column("Descripción", width=420, anchor='center', stretch=True)
+for col, w, anchor in (
+    ("Token", 90, "center"),
+    ("Lexema", 220, "w"),
+    ("Renglón", 90, "center"),
+    ("Descripción", 380, "w"),
+):
+    err_table.heading(col, text=col)
+    err_table.column(col, width=w, anchor=anchor, stretch=(col=="Descripción"))
+err_table.pack(fill='both', expand=True, pady=(4,0))
 
-yerr = ttk.Scrollbar(err_wrap, orient='vertical',   command=err_table.yview)
-xerr = ttk.Scrollbar(err_wrap, orient='horizontal', command=err_table.xview)
-err_table.configure(yscrollcommand=yerr.set, xscrollcommand=xerr.set)
-err_table.grid(row=0, column=0, sticky="nsew")
-yerr.grid(row=0, column=1, sticky="ns")
-xerr.grid(row=1, column=0, sticky="ew")
-err_wrap.rowconfigure(0, weight=1)
-err_wrap.columnconfigure(0, weight=1)
+# Zebra rows
+sym_table.tag_configure("odd",  background="#f7f7fb")
+sym_table.tag_configure("even", background="#ffffff")
+err_table.tag_configure("odd",  background="#f7f7fb")
+err_table.tag_configure("even", background="#ffffff")
 
+# Atajo para limpiar
 root.bind("<Control-l>", lambda e: limpiar())
-root.after(30, gutter.redraw)
+
+# Primer repintado del gutter
+root.after_idle(gutter.redraw)
+
 root.mainloop()
