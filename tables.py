@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 class SymbolTable:
     def __init__(self):
-        self.symbols = OrderedDict()  # preserva orden
+        self.symbols = OrderedDict()
 
     def clear(self):
         self.symbols.clear()
@@ -34,14 +34,13 @@ class ErrorTable:
         return f"ES{self.counter}"
 
     def add(self, token, lexema, renglon, descripcion):
-        # Evita duplicar por (Lexema, Renglón, Descripción)
-        for e in self.errors:
-            if e['Lexema'] == lexema and e['Renglón'] == renglon and e['Descripción'] == descripcion:
-                return
+        """
+        ⚠️ CAMBIO IMPORTANTE:
+        Ya no se filtran duplicados por (Lexema, Renglón, Descripción).
+        Esto permite que si en una misma línea hay 2 errores distintos,
+        ambos se registren (como pidió la maestra).
+        """
         code = token or self._next_code()
-        used = {e['Token'] for e in self.errors}
-        while code in used:
-            code = self._next_code()
         self.errors.append({
             "Token": code,
             "Lexema": lexema,
@@ -54,18 +53,14 @@ class ErrorTable:
 
 
 class LexemeTable:
-    """
-    Tabla de TODOS los lexemas que aparecen (operadores, ;, IDs, etc.)
-    Para los IDs, luego del parse completamos el 'Tipo'.
-    """
     def __init__(self):
-        self.items = OrderedDict()  # lexema -> tipo_o_None (preserva orden)
+        self.items = OrderedDict()
 
     def clear(self):
         self.items.clear()
 
     def add(self, lexema, tipo=None):
-        if lexema not in self.items:     # queremos 1a aparición
+        if lexema not in self.items:
             self.items[lexema] = tipo
 
     def set_type_if_id(self, lexema, tipo):
@@ -74,3 +69,7 @@ class LexemeTable:
 
     def rows(self):
         return [(k, (v if v else "")) for k, v in self.items.items()]
+# ---- Instancias globales ----
+symbol_table = SymbolTable()
+error_table = ErrorTable()
+lexeme_table = LexemeTable()
