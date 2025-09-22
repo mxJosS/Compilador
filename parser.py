@@ -62,9 +62,12 @@ def p_declaracion(p):
         symbol_table.add(lex, tipo)
 
 # Declaración con identificador mal formado -> Variable indefinida
-def p_declaracion_badid(p):
-    '''declaracion : TIPO BADID PUNTOYCOMA'''
-    error_table.add(None, p[2], p.lineno(2), "Variable indefinida")
+def p_expresion_badid(p):
+    '''expresion : BADID'''
+    ln = p.lineno(1)
+    error_table.add(None, p[1], ln, "Variable indefinida")
+    p[0] = {'lexema': p[1], 'tipo': None, 'lineno': ln}
+
 
 # -------- Asignaciones --------
 def p_asignacion(p):
