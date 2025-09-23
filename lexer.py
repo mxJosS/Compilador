@@ -1,8 +1,9 @@
 # lexer.py
 import ply.lex as lex
+from tables import error_table  # Para registrar "No válido" en la tabla de errores
 
 tokens = (
-    'ID', 'BADID', 'ENTERO', 'REAL', 'CADENA',   # <-- BADID agregado
+    'ID', 'BADID', 'ENTERO', 'REAL', 'CADENA',
     'ASIGNACION',
     'MAS', 'MENOS', 'MULT', 'DIV', 'MOD',
     'MAYOR', 'MENOR', 'MAYORIGUAL', 'MENORIGUAL', 'IGUAL', 'DIF',
@@ -12,7 +13,8 @@ tokens = (
     'TIPO',
 )
 
-t_ignore = ' \t'
+# Ignora espacio normal, tab y NBSP (espacio duro) para evitar falsos "No válido"
+t_ignore = ' \t\u00A0'
 
 def t_comment_line(t):
     r'//[^\n]*'
@@ -87,8 +89,21 @@ def t_ID(t):
     r'\$[0-9A-Z]+'
     return t
 
+# ---------- Errores léxicos -> "No válido" ----------
 def t_error(t):
-    # Silenciado: NO registrar errores léxicos
-    t.lexer.skip(1)
+    """
+    Registra en la tabla de errores cualquier secuencia no reconocida como 'No válido'.
+    - Agrupa palabras en minúsculas como un solo lexema.
+    - Si no coincide, consume un carácter y lo reporta.
+    """
+    import re
+    m = re.match(r'[a-z]+', t.value)
+    if m:
+        lexema = m.group(0)
+        error_table.add(None, lexema, t.lineno, "No válido")
+        t.lexer.skip(len(lexema))
+    else:
+        error_table.add(None, t.value[0], t.lineno, "No válido")
+        t.lexer.skip(1)
 
 lexer = lex.lex()
