@@ -4,6 +4,7 @@ from tkinter import ttk
 from lexer import lexer as lex_inst
 from parser import parser
 from tables import symbol_table, error_table, lexeme_table
+from triplos_ui import get_triplos_table  # usa headers/rows actuales de icg.py
 
 # ---------------- Gutter (números de línea) ----------------
 class LineNumbers(tk.Canvas):
@@ -12,7 +13,6 @@ class LineNumbers(tk.Canvas):
         self.textwidget = textwidget
 
     def redraw(self, *_):
-        # Si el Text aún no está listo, reintenta un frame después
         try:
             _ = self.textwidget.dlineinfo("1.0")
         except tk.TclError:
@@ -36,6 +36,7 @@ def analizar():
     # Limpiar UI
     for w in sym_table.get_children(): sym_table.delete(w)
     for w in err_table.get_children(): err_table.delete(w)
+    for w in tri_table.get_children(): tri_table.delete(w)
 
     # Limpiar modelos
     symbol_table.clear()
@@ -70,7 +71,7 @@ def analizar():
 
         lexeme_table.add(lex, t)
 
-    # PASO 2: parsear con el MISMO lexer (reseteado) para llenar símbolos/errores
+    # PASO 2: parsear para símbolos/errores (+ triplos)
     lex_inst.lineno = 1
     lex_inst.input(codigo)
     parser.parse(codigo, lexer=lex_inst)
@@ -79,14 +80,25 @@ def analizar():
     for lexema, tipo in symbol_table.rows():
         lexeme_table.set_type_if_id(lexema, tipo)
 
-    # Poblar UI (con zebra)
+    # Poblar UI (zebra) - Lexemas
     for i, (lex, tipo) in enumerate(lexeme_table.rows()):
         tag = "odd" if i % 2 else "even"
         sym_table.insert('', 'end', values=(lex, tipo if tipo else ""), tags=(tag,))
 
+    # Poblar UI - Errores
     for i, (token, lexema, renglon, desc) in enumerate(error_table.rows()):
         tag = "odd" if i % 2 else "even"
         err_table.insert('', 'end', values=(token, lexema, renglon, desc), tags=(tag,))
+
+    # Poblar UI - Triplos (usa headers actuales de icg.py)
+    tri_data = get_triplos_table()  # {"title","headers","rows"}
+    for i, row in enumerate(tri_data["rows"]):
+        tag = "odd" if i % 2 else "even"
+        tri_table.insert(
+            '', 'end',
+            values=[row.get(h, "") for h in tri_data["headers"]],
+            tags=(tag,)
+        )
 
     gutter.redraw()
 
@@ -94,6 +106,7 @@ def limpiar():
     editor.delete("1.0", tk.END)
     for w in sym_table.get_children(): sym_table.delete(w)
     for w in err_table.get_children(): err_table.delete(w)
+    for w in tri_table.get_children(): tri_table.delete(w)
     symbol_table.clear()
     error_table.clear()
     lexeme_table.clear()
@@ -103,9 +116,9 @@ def limpiar():
 # ---------------- UI ----------------
 root = tk.Tk()
 root.title("Compilador U1 - Automatas II (FOR)")
-root.geometry("1100x680")
+root.geometry("1100x800")
 
-# ----- ESTILOS BONITOS -----
+# ----- ESTILOS -----
 style = ttk.Style(root)
 style.theme_use("clam")
 
@@ -179,9 +192,10 @@ paned.add(left, weight=1)
 right = ttk.Frame(paned)
 paned.add(right, weight=1)
 
+# Tabla de lexemas
 ttk.Label(right, text="Tabla de lexemas", style="Title.TLabel").pack(anchor='w')
 sym_table = ttk.Treeview(
-    right, columns=("Lexema","Tipo"), show="headings", height=12, style="Blue.Treeview"
+    right, columns=("Lexema","Tipo"), show="headings", height=10, style="Blue.Treeview"
 )
 sym_table.heading("Lexema", text="Lexema")
 sym_table.heading("Tipo",   text="Tipo")
@@ -189,10 +203,11 @@ sym_table.column("Lexema", width=280, anchor="w", stretch=True)
 sym_table.column("Tipo",   width=140, anchor="center")
 sym_table.pack(fill='x', pady=(4,10))
 
+# Tabla de errores
 ttk.Label(right, text="Tabla de errores", style="Title.TLabel").pack(anchor='w')
 err_table = ttk.Treeview(
     right, columns=("Token","Lexema","Renglón","Descripción"),
-    show="headings", height=12, style="Blue.Treeview"
+    show="headings", height=10, style="Blue.Treeview"
 )
 for col, w, anchor in (
     ("Token", 90, "center"),
@@ -202,13 +217,42 @@ for col, w, anchor in (
 ):
     err_table.heading(col, text=col)
     err_table.column(col, width=w, anchor=anchor, stretch=(col=="Descripción"))
-err_table.pack(fill='both', expand=True, pady=(4,0))
+err_table.pack(fill='x', pady=(4,10))
+
+# ---- Tabla de triplos (dinámica con headers de icg.py) ----
+tri_meta = get_triplos_table()      # {"title": "Triplos", "headers": [...], "rows": [...]}
+tri_headers = tri_meta["headers"]   # ["#", "OP", "DO", "DF"]
+
+ttk.Label(right, text="Tabla de triplos", style="Title.TLabel").pack(anchor='w')
+tri_table = ttk.Treeview(
+    right, columns=tri_headers, show="headings", height=12, style="Blue.Treeview"
+)
+
+# Encabezados
+for col in tri_headers:
+    tri_table.heading(col, text=col)
+
+# Anchos/alineación
+col_widths  = {"#": 50, "OP": 90, "DO": 180, "DF": 260}
+col_anchors = {"#": "center", "OP": "center", "DO": "w",  "DF": "w"}
+
+for col in tri_headers:
+    tri_table.column(
+        col,
+        width=col_widths.get(col, 120),
+        anchor=col_anchors.get(col, "center"),
+        stretch=(col in ("DO", "DF"))
+    )
+
+tri_table.pack(fill='both', expand=True, pady=(4,0))
 
 # Zebra rows
 sym_table.tag_configure("odd",  background="#f7f7fb")
 sym_table.tag_configure("even", background="#ffffff")
 err_table.tag_configure("odd",  background="#f7f7fb")
 err_table.tag_configure("even", background="#ffffff")
+tri_table.tag_configure("odd",  background="#f7f7fb")
+tri_table.tag_configure("even", background="#ffffff")
 
 # Atajo para limpiar
 root.bind("<Control-l>", lambda e: limpiar())
