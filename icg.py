@@ -46,9 +46,13 @@ class TriploTable:
         )
         return res
 
-    def error(self, lexeme: str, message: str):
-        # Registramos como OP=ERROR; DO y DF sin nota (solo columnas pedidas)
-        self.add("ERROR", arg1=lexeme, arg2=None, res="-")
+    def error(self, lexeme: str = None, message: str = None):
+        """
+        Registrar un triplo de ERROR con DO y DF vacíos (compilador, no intérprete).
+        El mensaje se guarda en tu error_table (no aquí).
+        """
+        # OP=ERROR; DO="", DF=""
+        self.add("ERROR")
 
     # -------- salida para UI (estilo maestra) --------
     def headers(self):
@@ -64,7 +68,8 @@ class TriploTable:
           - GOTO : DO = etiqueta (arg1), DF = ""
           - LABEL: DO = etiqueta (arg1), DF = ""
           - PRINT: DO = valor (arg1),    DF = ""
-        IF_FALSE_GOTO queda como DO = etiqueta (res), DF = condición (arg1).
+          - ERROR: DO = "", DF = ""   (requisito del compilador)
+        IF_FALSE_GOTO queda por defecto como DO = res (etiqueta), DF = condición (arg1).
         """
         rows = []
         for r in self.rows:
@@ -78,7 +83,8 @@ class TriploTable:
                 DO, DF = (r.arg1 or ""), ""
             elif op == "PRINT":
                 DO, DF = (r.arg1 or ""), ""
-            # READ típicamente sería DO = id (res) y DF = stdin (arg1); queda con el mapping por defecto.
+            elif op == "ERROR":
+                DO, DF = "", ""
 
             rows.append({
                 "#": r.idx,

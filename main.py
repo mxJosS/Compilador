@@ -4,7 +4,7 @@ from tkinter import ttk
 from lexer import lexer as lex_inst
 from parser import parser
 from tables import symbol_table, error_table, lexeme_table
-from triplos_ui import get_triplos_table  # usa headers/rows actuales de icg.py
+from triplos_ui import get_triplos_table, reset_triplos_table  # <-- reset agregado
 
 # ---------------- Gutter (números de línea) ----------------
 class LineNumbers(tk.Canvas):
@@ -31,6 +31,31 @@ class LineNumbers(tk.Canvas):
                              font=("Consolas", 10), fill="#111827")
             i = self.textwidget.index(f"{i}+1line")
 
+# ---------------- Util: explicación para OP ----------------
+_SYMBOL_MAP = {
+    'ADD': '+', 'SUB': '-', 'MUL': '*', 'DIV': '/', 'MOD': '%',
+    'AND': '&&', 'OR': '||', 'NOT': '!',
+    '==': '==', '!=': '!=', '<': '<', '<=': '<=', '>': '>', '>=': '>='
+}
+def _explain_op(op: str) -> str:
+    if op in _SYMBOL_MAP:
+        return f"Operación ({_SYMBOL_MAP[op]})"
+    if op == ':=':
+        return "Asignación (=)"
+    if op == 'IF_FALSE_GOTO':
+        return "Salto condicional si condición es falsa"
+    if op == 'LABEL':
+        return "Etiqueta (marca de salto)"
+    if op == 'GOTO':
+        return "Salto incondicional"
+    if op == 'LIT':
+        return "Literal (valor constante)"
+    if op == 'REF':
+        return "Referencia a variable"
+    if op == 'ERROR':
+        return "Error detectado (ver tabla de errores)"
+    return "—"
+
 # ---------------- Acciones ----------------
 def analizar():
     # Limpiar UI
@@ -42,6 +67,7 @@ def analizar():
     symbol_table.clear()
     error_table.clear()
     lexeme_table.clear()
+    reset_triplos_table()     # <-- clave: limpia triplos y resetea #, temps, etc.
 
     codigo = editor.get("1.0", tk.END)
 
@@ -92,13 +118,16 @@ def analizar():
 
     # Poblar UI - Triplos (usa headers actuales de icg.py)
     tri_data = get_triplos_table()  # {"title","headers","rows"}
-    for i, row in enumerate(tri_data["rows"]):
+    headers = tri_data["headers"]   # ["#", "OP", "DO", "DF"]
+    rows = tri_data["rows"]
+
+    # Insertar filas incluyendo la columna extra "Explicación"
+    for i, row in enumerate(rows):
         tag = "odd" if i % 2 else "even"
-        tri_table.insert(
-            '', 'end',
-            values=[row.get(h, "") for h in tri_data["headers"]],
-            tags=(tag,)
-        )
+        op = row.get('OP', '')
+        exp = _explain_op(op)
+        values = [row.get(h, "") for h in headers] + [exp]  # agrega explicación al final
+        tri_table.insert('', 'end', values=values, tags=(tag,))
 
     gutter.redraw()
 
@@ -110,6 +139,7 @@ def limpiar():
     symbol_table.clear()
     error_table.clear()
     lexeme_table.clear()
+    reset_triplos_table()     # <-- también al limpiar, por si acaso
     lex_inst.lineno = 1
     gutter.redraw()
 
@@ -222,26 +252,27 @@ err_table.pack(fill='x', pady=(4,10))
 # ---- Tabla de triplos (dinámica con headers de icg.py) ----
 tri_meta = get_triplos_table()      # {"title": "Triplos", "headers": [...], "rows": [...]}
 tri_headers = tri_meta["headers"]   # ["#", "OP", "DO", "DF"]
+tri_headers_ui = tuple(list(tri_headers) + ["Explicación"])  # <- columna extra en UI
 
 ttk.Label(right, text="Tabla de triplos", style="Title.TLabel").pack(anchor='w')
 tri_table = ttk.Treeview(
-    right, columns=tri_headers, show="headings", height=12, style="Blue.Treeview"
+    right, columns=tri_headers_ui, show="headings", height=12, style="Blue.Treeview"
 )
 
 # Encabezados
-for col in tri_headers:
+for col in tri_headers_ui:
     tri_table.heading(col, text=col)
 
 # Anchos/alineación
-col_widths  = {"#": 50, "OP": 90, "DO": 180, "DF": 260}
-col_anchors = {"#": "center", "OP": "center", "DO": "w",  "DF": "w"}
+col_widths  = {"#": 50, "OP": 100, "DO": 220, "DF": 260, "Explicación": 260}
+col_anchors = {"#": "center", "OP": "center", "DO": "w",  "DF": "w", "Explicación": "w"}
 
-for col in tri_headers:
+for col in tri_headers_ui:
     tri_table.column(
         col,
         width=col_widths.get(col, 120),
         anchor=col_anchors.get(col, "center"),
-        stretch=(col in ("DO", "DF"))
+        stretch=(col in ("DO", "DF", "Explicación"))
     )
 
 tri_table.pack(fill='both', expand=True, pady=(4,0))

@@ -1,11 +1,11 @@
-# parser.py 
+# parser.py
 import ply.yacc as yacc
 from lexer import tokens
 from tables import symbol_table, error_table
-from icg import TriploTable   # <--- NUEVO
+from icg import TriploTable   # <--- OK
 
 # ===== Triplos =====
-trip = TriploTable()          # <--- NUEVO
+trip = TriploTable()          # <--- OK
 
 precedence = (
     ('left', 'MAS', 'MENOS'),
@@ -52,7 +52,7 @@ def p_declaracion(p):
     lex  = p[2]
     if symbol_table.exists(lex):
         error_table.add(None, lex, p.lineno(2), "Declaración duplicada")
-        trip.error(lex, "Declaración duplicada")  # también en triplos
+        trip.error(lex, "Declaración duplicada")  # también en triplos (ERROR con DO/DF vacíos)
     else:
         symbol_table.add(lex, tipo)
 
@@ -145,6 +145,7 @@ def p_asignacion_id(p):
     if not symbol_table.exists(nombre):
         error_table.add(None, nombre, ln, "Variable indefinida")
         trip.error(nombre, "Variable indefinida")
+        # Limpieza de errores colaterales en la misma línea (tu comportamiento original)
         error_table.errors = [
             e for e in error_table.errors
             if not (e.get('Renglón') == ln and e.get('Lexema') != nombre)
@@ -181,7 +182,7 @@ def p_asignacion_badid(p):
 # -------- For --------
 def p_ciclo_for(p):
     '''ciclo_for : FOR LPAREN asignacion condicion_opt PUNTOYCOMA asignacion RPAREN LBRACE lista_sentencias_opt RBRACE'''
-    # Esquema clásico de 3 direcciones
+    # Esquema clásico simplificado
     L_begin = f"L{len(trip.rows)+1}_for"
     L_end   = f"L{len(trip.rows)+2}_fend"
     trip.add('LABEL', arg1=L_begin, arg2=None, res='-')
@@ -192,8 +193,10 @@ def p_ciclo_for(p):
         cond_place = None
 
     if cond_place is not None:
+        # IF_FALSE_GOTO a L_end; en to_rows, DO=res (etiqueta) y DF=condición
         trip.add('IF_FALSE_GOTO', arg1=cond_place, arg2=None, res=L_end)
 
+    # (tu flujo actual) — sin tocar resto para no afectar funcionalidad existente
     trip.add('GOTO', arg1=L_begin, arg2=None, res='-')
     trip.add('LABEL', arg1=L_end, arg2=None, res='-')
 
@@ -210,6 +213,9 @@ def p_empty(p):
     pass
 
 def p_error(p):
+    # Puedes agregar registro sintáctico si lo deseas:
+    # if p is None: trip.error(None, "Fin de entrada inesperado")
+    # else: trip.error(str(getattr(p, 'value', '?')), "Token inesperado")
     pass
 
 parser = yacc.yacc(debug=False)
