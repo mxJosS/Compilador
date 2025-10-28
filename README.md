@@ -1,4 +1,4 @@
-<h1>Compilador U1 – Lenguajes y Autómatas II (FOR)</h1>
+<h1>Compilador U1, U2 – Lenguajes y Autómatas II (FOR)</h1>
 <p>
   Mini–compilador didáctico en <b>Python + PLY (lex/yacc)</b> y <b>Tkinter</b> que simula
   análisis léxico, sintáctico y semántico. Incluye GUI con editor (izquierda) y tablas
