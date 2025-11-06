@@ -15,6 +15,9 @@ class TriploTable:
         self.rows: List[Triplo] = []
         self._i = 0
         self._t = 0
+        self._l = 0  # Contador para etiquetas
+        self._buffer: List[Triplo] = []  # Buffer para reordenar triplos
+        self._buffering = False  # Flag para saber si estamos en modo buffer
 
     # -------- generación básica --------
     def _next_idx(self) -> int:
@@ -24,6 +27,21 @@ class TriploTable:
     def new_temp(self) -> str:
         self._t += 1
         return f"t{self._t}"
+
+    def new_label(self, prefix: str = "L") -> str:
+        """
+        Genera una nueva etiqueta única (L1, L2, ...)
+        """
+        self._l += 1
+        return f"{prefix}{self._l}"
+
+    def free_temp(self, temp_name: str):
+        """
+        Devuelve un temporal (tX) a la pila para ser reutilizado.
+        Por ahora es un placeholder para compatibilidad con parser.py
+        """
+        # No hace nada en esta versión simplificada
+        pass
 
     def add(self, op: str, arg1=None, arg2=None, res=None, note=None):
         """
@@ -35,16 +53,41 @@ class TriploTable:
           note: ignorado (ya no hay columna NOTE), se acepta por compatibilidad
         """
         idx = self._next_idx()
-        self.rows.append(
-            Triplo(
-                idx,
-                str(op),
-                str(arg1) if arg1 is not None else None,
-                str(arg2) if arg2 is not None else None,
-                str(res) if res is not None else None,
-            )
+        triplo = Triplo(
+            idx,
+            str(op),
+            str(arg1) if arg1 is not None else None,
+            str(arg2) if arg2 is not None else None,
+            str(res) if res is not None else None,
         )
+        
+        # Si estamos en modo buffering, guardar en el buffer
+        if self._buffering:
+            self._buffer.append(triplo)
+        else:
+            self.rows.append(triplo)
+        
         return res
+    
+    def start_buffering(self):
+        """Inicia el modo buffer para guardar triplos temporalmente"""
+        self._buffering = True
+        self._buffer.clear()
+    
+    def end_buffering(self):
+        """Termina el modo buffer y retorna los triplos guardados"""
+        self._buffering = False
+        buffered = self._buffer.copy()
+        self._buffer.clear()
+        return buffered
+    
+    def insert_triplos(self, triplos: List[Triplo]):
+        """Inserta una lista de triplos en la tabla"""
+        self.rows.extend(triplos)
+    
+    def mark_position(self) -> int:
+        """Marca la posición actual en la tabla de triplos"""
+        return len(self.rows)
 
     def error(self, lexeme: str = None, message: str = None):
         """
@@ -75,7 +118,23 @@ class TriploTable:
         for r in self.rows:
             op = r.op
             DO = r.res or ""
-            DF = f"{r.arg1}, {r.arg2}" if (r.arg1 and r.arg2) else (r.arg1 or r.arg2 or "")
+            
+            # --- LÓGICA DE DF MODIFICADA (PARA COINCIDIR CON PDF) ---
+            
+            # Caso 1: Acumulador (Ej: ADD, t1, 5, t1)
+            #   DO (r.res) es 't1'. r.arg1 es 't1'.
+            #   No queremos "t1, 5", solo queremos "5".
+            if r.res is not None and r.res == r.arg1 and r.arg2 is not None:
+                DF = r.arg2 or ""
+            
+            # Caso 2: Binario estándar (no usado en tu parser, pero bueno tenerlo)
+            elif r.arg1 and r.arg2:
+                DF = f"{r.arg1}, {r.arg2}"
+            
+            # Caso 3: Unario (Ej: :=, 7, None, t1) o (:=, t1, None, $1ITA)
+            else:
+                DF = r.arg1 or r.arg2 or ""
+            # --- FIN DE LÓGICA MODIFICADA ---
 
             if op == "GOTO":
                 DO, DF = (r.arg1 or ""), ""
@@ -111,3 +170,12 @@ class TriploTable:
         self.rows.clear()
         self._i = 0
         self._t = 0
+        self._l = 0  # Resetear contador de etiquetas
+        self._buffer.clear()
+        self._buffering = False
+
+    @property
+    def triplos(self):
+        """Alias para compatibilidad con código existente"""
+        return self.rows
+

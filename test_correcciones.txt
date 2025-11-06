@@ -1,0 +1,4 @@
+cat $1ITA;
+for ($1ITA = 0; $1ITA <= 5;) {
+    $1ITA = $1ITA + 1;
+}

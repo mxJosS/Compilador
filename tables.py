@@ -1,5 +1,5 @@
-# tables.py
 from collections import OrderedDict
+import re
 
 # ---------------------------
 # Tabla de Símbolos
@@ -28,8 +28,18 @@ class SymbolTable:
 # ---------------------------
 # Tabla de Errores (semánticos)
 #   - dedup por (Lexema, Renglón, Descripción)
-#   - permite múltiples errores distintos en el mismo renglón
+#   - Normaliza flechas: "(A <- B)" -> "(B -----> A)"
 # ---------------------------
+_ARROW_IN_PATTERN = re.compile(r'\(\s*([^()]+?)\s*<-\s*([^()]+?)\s*\)')
+
+def _normalize_arrows(desc: str) -> str:
+    """Convierte cualquier '(A <- B)' a '(B -----> A)'."""
+    def _flip(m):
+        left  = m.group(1).strip()
+        right = m.group(2).strip()
+        return f"({right} -----> {left})"
+    return _ARROW_IN_PATTERN.sub(_flip, desc or "")
+
 class ErrorTable:
     def __init__(self):
         self.errors = []
@@ -44,6 +54,9 @@ class ErrorTable:
         return f"ES{self.counter}"
 
     def add(self, token, lexema, renglon, descripcion):
+        # Normaliza flechas en la descripción
+        descripcion = _normalize_arrows(descripcion)
+
         # Evitar duplicados exactos
         for e in self.errors:
             if (e['Lexema'] == lexema and
@@ -59,15 +72,12 @@ class ErrorTable:
         })
 
     def rows(self):
-        # [(token, lexema, renglon, descripcion), ...]
         return [(e['Token'], e['Lexema'], e['Renglón'], e['Descripción'])
                 for e in self.errors]
 
 
 # ---------------------------
 # Tabla de Lexemas (para UI)
-#   - guarda TODOS los lexemas que aparecen (IDs, operadores, ';', literales…)
-#   - el tipo se completa luego si el lexema es un ID declarado
 # ---------------------------
 class LexemeTable:
     def __init__(self):
@@ -91,7 +101,7 @@ class LexemeTable:
 
 
 # ---------------------------
-# Instancias globales (para importar)
+# Instancias globales
 # ---------------------------
 symbol_table = SymbolTable()
 error_table = ErrorTable()
