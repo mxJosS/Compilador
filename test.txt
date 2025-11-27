@@ -1,0 +1,67 @@
+cat $1ITA;
+cats $2ITALIA;
+meow $3TEXTO;
+
+$1ITA = "7";
+$2ITALIA = 2.5;
+$3TEXTO = "hola";
+
+$1ITA = $1ITA + 5;
+$2ITALIA = $2ITALIA * 1.25;
+$3TEXTO = "miau";
+
+$1ITA = ($1ITA - 2) % 3;
+
+for ($1ITA = 0; $1ITA + 1; $1ITA = $1ITA + 1;) {
+    $1ITA = $1ITA + "1";
+}
+
+
+
+
+
+
+ORIGINAL 
+
+cat $1ITA; cats $2ITALIA; meow $3TEXTO; $1ITA = 7; $2ITALIA = 2.5; $3TEXTO = "hola"; $1ITA = $1ITA + 5; $2ITALIA = $2ITALIA * 1.25; $3TEXTO = "miau"; $1ITA = ($1ITA - 2) % 3; cat $1I; meow $2ITALIA; $11I = 0 * $3TEXTO; for ($1I = 0; $1I + 1; $1I = $1I + 1;) { $1I = $1I + "1"; }
+
+
+
+
+
+OTRO
+
+
+cat $1X;
+cats $2Y;
+meow $3MSG;
+
+$1X = 5;
+$2Y = 2.5;
+$3MSG = "inicio";
+
+$1X = $1X + 3;
+$2Y = $2Y * $1X;
+
+if ($1X > 6) {
+    $3MSG = "grande";
+} else {
+    $3MSG = "peque";
+}
+
+$1X = ($1X - 1) % 2;
+
+$3MSG = "fin";
+
+
+
+
+
+
+
+
+
+
+cat $X; meow $S;
+$X = 4; $S = "a";
+if ($X > 2) { $S = "ok"; } else { $S = "no"; }

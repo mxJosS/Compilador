@@ -1,3 +1,4 @@
+#lexer.py
 import ply.lex as lex
 from tables import error_table  # Para registrar "No válido" en la tabla de errores
 
