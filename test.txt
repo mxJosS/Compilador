@@ -55,13 +55,33 @@ $3MSG = "fin";
 
 
 
-
-
-
-
-
-
-
 cat $X; meow $S;
 $X = 4; $S = "a";
 if ($X > 2) { $S = "ok"; } else { $S = "no"; }
+
+
+
+UNIDAD 3
+
+
+
+cat $1ITA; 
+cats $2ITALIA;
+meow $3TEXTO;
+
+$1ITA = "7";
+$2ITALIA = 2.5;
+$3TEXTO = "hola";
+
+$1ITA = $1ITA + 5;
+$2ITALIA = $2ITALIA * 1.25;
+$3TEXTO = "miau";
+$2ITALIA = $2ITALIA * 1.25 + $1ITA - 5;
+$1ITA = ($1ITA - 2) % 3;
+$2ITALIA = ($1ITA - 2) % 3 + 10;
+
+for ($1ITA = 0; $1ITA + 1; $1ITA = $1ITA + 1;) {
+    $1ITA = $1ITA + "1";
+}
+
+

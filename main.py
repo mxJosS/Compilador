@@ -3,7 +3,10 @@ from tkinter import ttk
 from lexer import lexer as lex_inst
 from parser import parser
 from tables import symbol_table, error_table, lexeme_table
-from triplos_ui import get_triplos_table, reset_triplos_table  # reset triplos
+from triplos_ui import get_triplos_table, reset_triplos_table, get_triplos_raw
+from optimizacion import optimizar_dependencias
+from ensamblador import generar_ensamblador
+
 
 # ---------------- Gutter (números de línea) ----------------
 class LineNumbers(tk.Canvas):
@@ -30,6 +33,7 @@ class LineNumbers(tk.Canvas):
                              font=("Consolas", 10), fill="#111827")
             i = self.textwidget.index(f"{i}+1line")
 
+
 # ---------------- Util: OP visual + explicación ----------------
 def _display_op(op: str, do: str = "") -> str:
     """Convierte mnemónicos del backend a símbolos/etiquetas amigables para la UI."""
@@ -54,6 +58,7 @@ def _display_op(op: str, do: str = "") -> str:
 
     return op
 
+
 def _pretty_label(alias: str) -> str:
     """Convierte nombres de etiqueta a alias legibles."""
     if not alias:
@@ -64,28 +69,46 @@ def _pretty_label(alias: str) -> str:
         return "END"
     return alias
 
+
 def _explain_op(op: str) -> str:
-    if op in {"+","-","*","/","%"}: return f"Operación aritmética ({op})"
-    if op in {"&&","||","!"}:        return f"Operación lógica ({op})"
-    if op in {"==","!=", "<","<=",">",">="}: return f"Comparación ({op})"
-    if op == "=":                    return "Asignación (=)"
-    if op in {"JMP","GOTO"}:         return "Salto incondicional"
-    if op in {"IF","IF_FALSE_GOTO","IF NOT"}:
+    if op in {"+", "-", "*", "/", "%"}:
+        return f"Operación aritmética ({op})"
+    if op in {"&&", "||", "!"}:
+        return f"Operación lógica ({op})"
+    if op in {"==", "!=", "<", "<=", ">", ">="}:
+        return f"Comparación ({op})"
+    if op == "=":
+        return "Asignación (=)"
+    if op in {"JMP", "GOTO"}:
+        return "Salto incondicional"
+    if op in {"IF", "IF_FALSE_GOTO", "IF NOT"}:
         return "Si NO(condición) salta a la etiqueta"
-    if op == "LABEL":                return "Etiqueta (marca de salto)"
-    if op == "BEGIN":                return "Inicio de bucle (LABEL)"
-    if op == "END":                  return "Fin de bucle (LABEL)"
-    if op == "JUMP → BEGIN":         return "Salto al inicio del bucle"
-    if op == "JUMP → END":           return "Salto al fin del bucle"
-    if op == "TRUE":                 return "Bandera TRUE (visual)"
-    if op == "FALSE":                return "Bandera FALSE (visual)"
-    if op == "LIT":                  return "Literal (valor constante)"
-    if op == "REF":                  return "Referencia a variable"
-    if op == "ERROR":                return "Error detectado (ver tabla de errores)"
+    if op == "LABEL":
+        return "Etiqueta (marca de salto)"
+    if op == "BEGIN":
+        return "Inicio de bucle (LABEL)"
+    if op == "END":
+        return "Fin de bucle (LABEL)"
+    if op == "JUMP → BEGIN":
+        return "Salto al inicio del bucle"
+    if op == "JUMP → END":
+        return "Salto al fin del bucle"
+    if op == "TRUE":
+        return "Bandera TRUE (visual)"
+    if op == "FALSE":
+        return "Bandera FALSE (visual)"
+    if op == "LIT":
+        return "Literal (valor constante)"
+    if op == "REF":
+        return "Referencia a variable"
+    if op == "ERROR":
+        return "Error detectado (ver tabla de errores)"
     return "—"
 
+
 # --- Filas TRUE/FALSE virtuales (solo presentación, no backend) ---
-_COMPARISON_MNEMONICS = {"GT","GTE","LT","LTE","EQ","NEQ"}  # lo que emite tu parser
+_COMPARISON_MNEMONICS = {"GT", "GTE", "LT", "LTE", "EQ", "NEQ"}  # lo que emite tu parser
+
 
 def _augment_truth_rows(rows):
     """
@@ -98,24 +121,33 @@ def _augment_truth_rows(rows):
         op = r.get("OP", "")
         if op in _COMPARISON_MNEMONICS:
             temp = r.get("DO", "")  # el temporal resultado de la comparación
-            out.append({"#": "", "OP": "TRUE",  "DO": temp, "DF": ""})
+            out.append({"#": "", "OP": "TRUE", "DO": temp, "DF": ""})
             out.append({"#": "", "OP": "FALSE", "DO": temp, "DF": ""})
     return out
 
-# ---------------- Acciones ----------------
-def analizar():
+
+# ---------------- Pipeline de análisis (reutilizable) ----------------
+def _analizar_codigo(codigo: str):
+    """
+    Pipeline completo de análisis para un código dado:
+    - limpia tablas/modelos
+    - vuelve a tokenizar y parsear
+    - rellena Lexemes, Errors, Triples
+    - genera ensamblador a partir de los triplos actuales
+    """
     # Limpiar UI
-    for w in sym_table.get_children(): sym_table.delete(w)
-    for w in err_table.get_children(): err_table.delete(w)
-    for w in tri_table.get_children(): tri_table.delete(w)
+    for w in sym_table.get_children():
+        sym_table.delete(w)
+    for w in err_table.get_children():
+        err_table.delete(w)
+    for w in tri_table.get_children():
+        tri_table.delete(w)
 
     # Limpiar modelos
     symbol_table.clear()
     error_table.clear()
     lexeme_table.clear()
-    reset_triplos_table()     # limpia triplos y resetea #, temps, etc.
-
-    codigo = editor.get("1.0", tk.END)
+    reset_triplos_table()  # limpia triplos y resetea #, temps, etc.
 
     # PASO 1: tokenizar (Tabla de lexemas)
     lex_inst.lineno = 1
@@ -172,8 +204,8 @@ def analizar():
     for i, row in enumerate(base_rows):
         tag = "odd" if i % 2 else "even"
 
-        op_raw  = row.get('OP', '')
-        do_val  = row.get('DO', '')
+        op_raw = row.get('OP', '')
+        do_val = row.get('DO', '')
         op_disp = _display_op(op_raw, do_val)
 
         # Clon para no mutar datos reales
@@ -183,7 +215,7 @@ def analizar():
         # Presentación bonita de IF_FALSE_GOTO: IF NOT | cond | JUMP → ALIAS
         if op_raw == "IF_FALSE_GOTO":
             label_raw = row.get('DO', '')
-            cond_raw  = row.get('DF', '')
+            cond_raw = row.get('DF', '')
             label_nice = _pretty_label(label_raw)
             row_disp['OP'] = "IF NOT"
             row_disp['DO'] = cond_raw or ''
@@ -200,30 +232,90 @@ def analizar():
         if row_disp.get('DO', '') == '':
             row_disp['DO'] = '—'
 
-        # <<< Renumeración UI: # consecutivo en orden visual >>>
+        # Renumeración UI
         row_disp['#'] = str(i + 1)
 
         exp = _explain_op(row_disp['OP'])
         values = [row_disp.get(h, "") for h in tri_headers] + [exp]
 
         # Tag visual suave para filas BEGIN/END/JUMP/TRUE/FALSE/IF NOT
-        ghost = row_disp['OP'] in {"BEGIN","END","JUMP → BEGIN","JUMP → END","TRUE","FALSE","IF NOT"}
+        ghost = row_disp['OP'] in {"BEGIN", "END", "JUMP → BEGIN", "JUMP → END", "TRUE", "FALSE", "IF NOT"}
         tags = (tag, "ghost") if ghost else (tag,)
         tri_table.insert('', 'end', values=values, tags=tags)
 
+    # --- Generar ensamblador desde los triplos actuales ---
+    raw_triplos = get_triplos_raw()
+    asm_lines = generar_ensamblador(raw_triplos)
+    asm_text.configure(state="normal")
+    asm_text.delete("1.0", tk.END)
+    asm_text.insert("1.0", "\n".join(asm_lines))
+    asm_text.configure(state="normal")
+
     gutter.redraw()
 
+
+# ---------------- Acciones de botones ----------------
+def analizar():
+    codigo = editor.get("1.0", tk.END)
+    _analizar_codigo(codigo)
+
+
+def optimizar():
+    """
+    Toma el código de la caja de entrada, le aplica la técnica B,
+    lo muestra en la pestaña 'Optimizado' y vuelve a analizar
+    (incluyendo triplos y ensamblador) usando ese código optimizado.
+    """
+    codigo = editor.get("1.0", tk.END).rstrip()
+    if not codigo.strip():
+        return  # No hay nada que optimizar
+
+    # 1) Código optimizado a nivel fuente
+    codigo_opt = optimizar_dependencias(codigo)
+
+    # 2) Mostrar en la pestaña "Optimizado"
+    opt_text.configure(state="normal")
+    opt_text.delete("1.0", tk.END)
+    opt_text.insert("1.0", codigo_opt)
+    opt_text.configure(state="normal")  # si quieres solo lectura: "disabled"
+
+    # 3) Re-analizar usando el código optimizado
+    _analizar_codigo(codigo_opt)
+
+    # 4) Cambiar a la pestaña Optimizado automáticamente
+    notebook.select(tab_opt)
+
 def limpiar():
+    # Limpiar editor
     editor.delete("1.0", tk.END)
-    for w in sym_table.get_children(): sym_table.delete(w)
-    for w in err_table.get_children(): err_table.delete(w)
-    for w in tri_table.get_children(): tri_table.delete(w)
+
+    # Limpiar tablas
+    for w in sym_table.get_children():
+        sym_table.delete(w)
+    for w in err_table.get_children():
+        err_table.delete(w)
+    for w in tri_table.get_children():
+        tri_table.delete(w)
+
+    # Limpiar modelos internos
     symbol_table.clear()
     error_table.clear()
     lexeme_table.clear()
     reset_triplos_table()
     lex_inst.lineno = 1
+
+    # Forzar refresco del gutter
     gutter.redraw()
+
+    # Limpiar código optimizado
+    opt_text.configure(state="normal")
+    opt_text.delete("1.0", tk.END)
+    opt_text.configure(state="normal")
+
+    # LIMPIAR ENSAMBLADOR — AQUÍ ESTÁ LA PARTE IMPORTANTE
+    asm_text.configure(state="normal")
+    asm_text.delete("1.0", tk.END)
+    asm_text.configure(state="normal")
 
 # ---------------- UI ----------------
 root = tk.Tk()
@@ -239,49 +331,77 @@ style.map("Blue.Treeview", background=[("selected", "#cfe8ff")])
 style.configure("Blue.Treeview.Heading", font=("Segoe UI", 10, "bold"), padding=6)
 
 # Layout principal
-paned = ttk.PanedWindow(root, orient='horizontal'); paned.pack(fill='both', expand=True, padx=8, pady=8)
+paned = ttk.PanedWindow(root, orient='horizontal')
+paned.pack(fill='both', expand=True, padx=8, pady=8)
 
 # ----- Izquierda: editor con gutter -----
-left = ttk.Frame(paned); left.configure(padding=0)
+left = ttk.Frame(paned)
+left.configure(padding=0)
 ttk.Label(left, text="Entrada", style="Title.TLabel").pack(anchor='w')
 
-editor_frame = ttk.Frame(left); editor_frame.pack(fill='both', expand=True, pady=(4,6))
-ys = ttk.Scrollbar(editor_frame, orient='vertical'); ys.pack(side='right', fill='y')
+editor_frame = ttk.Frame(left)
+editor_frame.pack(fill='both', expand=True, pady=(4, 6))
+ys = ttk.Scrollbar(editor_frame, orient='vertical')
+ys.pack(side='right', fill='y')
 
-gutter = LineNumbers(editor_frame, None, bg="#f3f4f6"); gutter.pack(side='left', fill='y')
+gutter = LineNumbers(editor_frame, None, bg="#f3f4f6")
+gutter.pack(side='left', fill='y')
 
 editor = tk.Text(editor_frame, height=25, wrap='none', font=("Consolas", 11), undo=True)
-editor.pack(side='left', fill='both', expand=True); gutter.textwidget = editor
+editor.pack(side='left', fill='both', expand=True)
+gutter.textwidget = editor
+
 
 def _sync_scroll(first, last):
-    ys.set(first, last); gutter.redraw()
+    ys.set(first, last)
+    gutter.redraw()
+
+
 editor.configure(yscrollcommand=_sync_scroll)
 ys.config(command=editor.yview)
 
 xs = ttk.Scrollbar(left, orient='horizontal', command=editor.xview)
-editor.configure(xscrollcommand=xs.set); xs.pack(fill='x')
+editor.configure(xscrollcommand=xs.set)
+xs.pack(fill='x')
 
-def _on_any_change(event=None): gutter.redraw()
+
+def _on_any_change(event=None):
+    gutter.redraw()
+
+
 for seq in ("<KeyRelease>", "<MouseWheel>", "<Button-4>", "<Button-5>", "<Configure>", "<Visibility>"):
     editor.bind(seq, _on_any_change)
 
+
 def _on_modified(event=None):
-    editor.edit_modified(False); gutter.redraw()
+    editor.edit_modified(False)
+    gutter.redraw()
+
+
 editor.bind("<<Modified>>", _on_modified)
 
+
 def _tick():
-    gutter.redraw(); root.after(120, _tick)
+    gutter.redraw()
+    root.after(120, _tick)
+
+
 root.after(200, _tick)
 
-btns = ttk.Frame(left); btns.pack(anchor='e', pady=(2,0))
-ttk.Button(btns, text="Analizar", command=analizar).pack(side='left', padx=(0,8))
-ttk.Button(btns, text="Limpiar",  command=limpiar).pack(side='left')
+btns = ttk.Frame(left)
+btns.pack(anchor='e', pady=(2, 0))
+ttk.Button(btns, text="Analizar", command=analizar).pack(side='left', padx=(0, 8))
+ttk.Button(btns, text="Optimizar", command=optimizar).pack(side='left', padx=(0, 8))
+ttk.Button(btns, text="Limpiar", command=limpiar).pack(side='left')
 
 paned.add(left, weight=1)
 
 # ----- Derecha: pestañas -----
-right = ttk.Frame(paned); paned.add(right, weight=1)
-notebook = ttk.Notebook(right); notebook.pack(fill='both', expand=True)
+right = ttk.Frame(paned)
+paned.add(right, weight=1)
+notebook = ttk.Notebook(right)
+notebook.pack(fill='both', expand=True)
+
 
 def make_scrolled_tree(parent, columns, height=14, style_name="Blue.Treeview"):
     frame = ttk.Frame(parent)
@@ -291,52 +411,88 @@ def make_scrolled_tree(parent, columns, height=14, style_name="Blue.Treeview"):
         frame, columns=columns, show="headings", height=height,
         style=style_name, yscrollcommand=yscroll.set, xscrollcommand=xscroll.set
     )
-    yscroll.config(command=tv.yview); yscroll.pack(side='right', fill='y')
-    xscroll.config(command=tv.xview); xscroll.pack(side='bottom', fill='x')
+    yscroll.config(command=tv.yview)
+    yscroll.pack(side='right', fill='y')
+    xscroll.config(command=tv.xview)
+    xscroll.pack(side='bottom', fill='x')
     tv.pack(side='left', fill='both', expand=True)
     return frame, tv
 
+
 # Lexemas
-tab_lex = ttk.Frame(notebook); notebook.add(tab_lex, text="Lexemes")
-sym_frame, sym_table = make_scrolled_tree(tab_lex, ("Lexema","Tipo"), height=16)
-sym_table.heading("Lexema", text="Lexema"); sym_table.heading("Tipo", text="Tipo")
+tab_lex = ttk.Frame(notebook)
+notebook.add(tab_lex, text="Lexemes")
+sym_frame, sym_table = make_scrolled_tree(tab_lex, ("Lexema", "Tipo"), height=16)
+sym_table.heading("Lexema", text="Lexema")
+sym_table.heading("Tipo", text="Tipo")
 sym_table.column("Lexema", width=360, anchor="w", stretch=True)
-sym_table.column("Tipo",   width=140, anchor="center")
+sym_table.column("Tipo", width=140, anchor="center")
 sym_frame.pack(fill='both', expand=True, padx=6, pady=6)
 
 # Errores
-tab_err = ttk.Frame(notebook); notebook.add(tab_err, text="Errors")
-err_frame, err_table = make_scrolled_tree(tab_err, ("Token","Lexema","Renglón","Descripción"), height=16)
-for col, w, anchor in (("Token",90,"center"), ("Lexema",260,"w"), ("Renglón",90,"center"), ("Descripción",520,"w")):
-    err_table.heading(col, text=col); err_table.column(col, width=w, anchor=anchor, stretch=(col=="Descripción"))
+tab_err = ttk.Frame(notebook)
+notebook.add(tab_err, text="Errors")
+err_frame, err_table = make_scrolled_tree(tab_err, ("Token", "Lexema", "Renglón", "Descripción"), height=16)
+for col, w, anchor in (("Token", 90, "center"), ("Lexema", 260, "w"),
+                       ("Renglón", 90, "center"), ("Descripción", 520, "w")):
+    err_table.heading(col, text=col)
+    err_table.column(col, width=w, anchor=anchor, stretch=(col == "Descripción"))
 err_frame.pack(fill='both', expand=True, padx=6, pady=6)
 
 # Triplos
-tab_tri = ttk.Frame(notebook); notebook.add(tab_tri, text="Triples")
+tab_tri = ttk.Frame(notebook)
+notebook.add(tab_tri, text="Triples")
 tri_headers = ["#", "OP", "DO", "DF"]
 tri_headers_ui = ("#", "OP", "DO", "DF", "Explicación")
 tri_frame, tri_table = make_scrolled_tree(tab_tri, tri_headers_ui, height=18)
-for col in tri_headers_ui: tri_table.heading(col, text=col)
+for col in tri_headers_ui:
+    tri_table.heading(col, text=col)
 
-col_widths  = {"#": 60, "OP": 120, "DO": 360, "DF": 520, "Explicación": 360}
-col_mins    = {"#": 40, "OP": 80,  "DO": 160, "DF": 200, "Explicación": 160}
-col_anchors = {"#": "center", "OP": "center", "DO": "w",  "DF": "w",  "Explicación": "w"}
+col_widths = {"#": 60, "OP": 120, "DO": 360, "DF": 520, "Explicación": 360}
+col_mins = {"#": 40, "OP": 80, "DO": 160, "DF": 200, "Explicación": 160}
+col_anchors = {"#": "center", "OP": "center", "DO": "w", "DF": "w", "Explicación": "w"}
 for col in tri_headers_ui:
     tri_table.column(
         col,
-        width=col_widths.get(col,120),
-        minwidth=col_mins.get(col,60),
-        anchor=col_anchors.get(col,"center"),
+        width=col_widths.get(col, 120),
+        minwidth=col_mins.get(col, 60),
+        anchor=col_anchors.get(col, "center"),
         stretch=True
     )
 tri_frame.pack(fill='both', expand=True, padx=6, pady=6)
 
+# Código optimizado (pestaña nueva)
+tab_opt = ttk.Frame(notebook)
+notebook.add(tab_opt, text="Optimizado")
+
+opt_text = tk.Text(tab_opt, wrap="none", font=("Consolas", 11))
+opt_text.pack(fill="both", expand=True, padx=6, pady=6)
+
+opt_ys = ttk.Scrollbar(tab_opt, orient="vertical", command=opt_text.yview)
+opt_xs = ttk.Scrollbar(tab_opt, orient="horizontal", command=opt_text.xview)
+opt_text.configure(yscrollcommand=opt_ys.set, xscrollcommand=opt_xs.set)
+opt_ys.pack(side="right", fill="y")
+opt_xs.pack(side="bottom", fill="x")
+
+# Código ensamblador (pestaña nueva)
+tab_asm = ttk.Frame(notebook)
+notebook.add(tab_asm, text="Ensamblador")
+
+asm_text = tk.Text(tab_asm, wrap="none", font=("Consolas", 11))
+asm_text.pack(fill="both", expand=True, padx=6, pady=6)
+
+asm_ys = ttk.Scrollbar(tab_asm, orient="vertical", command=asm_text.yview)
+asm_xs = ttk.Scrollbar(tab_asm, orient="horizontal", command=asm_text.xview)
+asm_text.configure(yscrollcommand=asm_ys.set, xscrollcommand=asm_xs.set)
+asm_ys.pack(side="right", fill="y")
+asm_xs.pack(side="bottom", fill="x")
+
 # Zebra rows + estilo para filas visuales
-sym_table.tag_configure("odd",  background="#f7f7fb")
+sym_table.tag_configure("odd", background="#f7f7fb")
 sym_table.tag_configure("even", background="#ffffff")
-err_table.tag_configure("odd",  background="#f7f7fb")
+err_table.tag_configure("odd", background="#f7f7fb")
 err_table.tag_configure("even", background="#ffffff")
-tri_table.tag_configure("odd",  background="#f7f7fb")
+tri_table.tag_configure("odd", background="#f7f7fb")
 tri_table.tag_configure("even", background="#ffffff")
 tri_table.tag_configure("ghost", foreground="#6b7280")  # gris tenue para BEGIN/END/JUMP/TRUE/FALSE/IF NOT
 
